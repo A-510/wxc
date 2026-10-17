@@ -73,8 +73,49 @@ def make_icon() -> None:
         raise SystemExit("需要 Pillow 来生成图标：python -m pip install pillow")
     ICON.parent.mkdir(parents=True, exist_ok=True)
     image = Image.open(ICON_SRC).convert("RGBA")
-    image.save(ICON, format="ICO", sizes=[(s, s) for s in ICON_SIZES if s <= max(image.size)])
-    print(f"[icon] {ICON_SRC.name} → {ICON.relative_to(ROOT)} {ICON_SIZES}")
+    sizes = [s for s in ICON_SIZES if s <= max(image.size)]
+    ICON.write_bytes(encode_ico(image, sizes))
+    print(f"[icon] {ICON_SRC.name} → {ICON.relative_to(ROOT)} {sizes}")
+
+
+def encode_ico(image, sizes: list[int]) -> bytes:
+    """自己写 ICO：小尺寸用 32bpp DIB 帧，256 用 PNG 帧。
+
+    Pillow 的 ICO 输出会把所有帧都存成 PNG，GDI+/部分系统组件的旧读取路径对这种帧会裁错画面；
+    DIB 帧是兼容性最稳的写法（Explorer、任务栏、第三方工具都认）。
+    """
+    import io
+    import struct
+
+    from PIL import Image
+
+    frames: list[bytes] = []
+    for size in sizes:
+        frame = image.resize((size, size), Image.LANCZOS)
+        if size >= 256:
+            buf = io.BytesIO()
+            frame.save(buf, format="PNG")
+            frames.append(buf.getvalue())
+            continue
+        pixels = frame.load()
+        xor = bytearray()
+        for y in range(size - 1, -1, -1):  # DIB 自下而上
+            for x in range(size):
+                r, g, b, a = pixels[x, y]
+                xor += bytes((b, g, r, a))
+        mask_stride = ((size + 31) // 32) * 4  # 1bpp，按 4 字节对齐；alpha 已够用，掩码留空
+        header = struct.pack("<IiiHHIIiiII", 40, size, size * 2, 1, 32, 0, 0, 0, 0, 0, 0)
+        frames.append(bytes(header) + bytes(xor) + bytes(mask_stride * size))
+
+    out = bytearray(struct.pack("<HHH", 0, 1, len(frames)))
+    offset = 6 + 16 * len(frames)
+    for size, blob in zip(sizes, frames):
+        out += struct.pack("<BBBBHHII", size if size < 256 else 0, size if size < 256 else 0,
+                           0, 0, 1, 32, len(blob), offset)
+        offset += len(blob)
+    for blob in frames:
+        out += blob
+    return bytes(out)
 
 
 def write_version_file() -> None:

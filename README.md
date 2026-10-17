@@ -12,7 +12,7 @@
 
 ## 下载即用：双击 `wxc.exe`
 
-到 [Releases](https://github.com/A-510/wxc/releases/latest) 下载 `wxc.exe`（单文件，约 10.5 MiB），放进任意目录双击即可；自己打包则是 `dist\wxc.exe`。
+到 [Releases](https://github.com/A-510/wxc/releases/latest) 下载 `wxc.exe`（单文件，约 10.6 MiB），放进任意目录双击即可；自己打包则是 `dist\wxc.exe`。
 
 第一次打开，它按 ① 电脑环境 → ② ffmpeg → ③ 依赖库 的顺序自检这台机器，进度就打在同一个窗口里：
 
