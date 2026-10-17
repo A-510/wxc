@@ -1,0 +1,102 @@
+{
+  "schema": "design-pipeline.direction-preview.v1",
+  "changeId": "anime-webui-redesign",
+  "applicability": {
+    "status": "required",
+    "reason": "visual-redesign"
+  },
+  "comparison": {
+    "brief": {
+      "path": "brief.md",
+      "sha256": "ce9b6f583b46352c2958af909158ac7aef528d7ecd2188834af82fa1b5e4040c"
+    },
+    "index": {
+      "path": "direction-previews/index.html",
+      "sha256": "a8d057461c2fe3df4c79bb96ef936207b84b3f3ba463b95e4325c1f211075cd3"
+    },
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "contentFixtureSha256": "80d6534ad0b2006e3b5e5a3e1187ea5007decf3de6950b829e934781e192e5b3",
+    "stateCoverage": [
+      "idle",
+      "queued",
+      "running",
+      "done",
+      "error",
+      "segment",
+      "cert-installed",
+      "proxy-on",
+      "capture-running",
+      "ffmpeg-ready",
+      "long-title",
+      "unknown-size-placeholder",
+      "inline-error-action"
+    ]
+  },
+  "directions": [
+    {
+      "id": "sky-glass",
+      "name": "空色玻璃（sky-glass）",
+      "thesis": "插画当窗外的天空：4K 动漫插画静态全幅铺底，所有文字落在 88% 不透明的奶油色磨砂玻璃上，四步流程做成四珠节奏轨道，类型/清晰度是微微旋转的番札贴纸，面板抬头带 4% 青海波纹样。",
+      "signature": "数据绑定的四步节奏轨道：四颗珠直接吃 /api/status 的 cert.installed、proxy.enabled、capture_running、counts.total>0 逐颗点亮，并在当前步给出可执行动作。",
+      "axes": {
+        "luminance": "light（亮色玻璃，白+奶油）",
+        "typeFamily": "人文系统无衬线（微软雅黑/系统 UI 栈）",
+        "color": "天空蓝 #1f6fbf + 樱粉 #e0568f，低彩度",
+        "layout": "单列全宽玻璃面板，页头+轨道+工具栏+表格自上而下",
+        "density": "舒适（行高约 52px，7 列全显示）",
+        "era": "现代 Web 玻璃拟态（2020s）",
+        "material": "磨砂玻璃 + 柔影 + 细白内描边"
+      },
+      "screenshot": {
+        "path": "direction-previews/sky-glass.png",
+        "sha256": "264f7bd4df9bec274a8ee0e42187bf3b4a055d831401de0cff3b48f394d218d0"
+      }
+    },
+    {
+      "id": "dusk-ink",
+      "name": "暮色墨（dusk-ink）",
+      "thesis": "插画压到 16% 不透明度当底纹：深靛紫控制台，左侧竖向四步时间轴（带发光连接线），右侧 12.5px 密集表格，荧光粉描边与等宽数字，13px 紧凑排版。",
+      "signature": "左侧「四步时间轴」把流程做成一条从已完成滑向当前步的发光轨道，右侧表格可同时看到 8+ 行下载队列。",
+      "axes": {
+        "luminance": "dark（深靛紫底，暗面板）",
+        "typeFamily": "系统无衬线 + 等宽数字，字号 13px",
+        "color": "深靛紫 #14101f + 荧光粉 #ff5c8a + 薄荷绿 #5ee0a0",
+        "layout": "左轨（206px）+ 右主区双栏，密集行",
+        "density": "密集（行高约 33px，8 行同屏）",
+        "era": "当代深色控制台/终端（2010s-2020s）",
+        "material": "平暗面 + 霓虹描边 + 微发光"
+      },
+      "screenshot": {
+        "path": "direction-previews/dusk-ink.png",
+        "sha256": "cabb1bf5da974e1a4357be30730f3eac653c749f72a63b8f9bd45c8d2acbe215"
+      }
+    },
+    {
+      "id": "poster-pop",
+      "name": "海报波普（poster-pop）",
+      "thesis": "插画裁成一张带硬边墨框与硬投影的「海报」压在顶部，其余是米黄纸张 + 2px 墨线 + 半调网点 + 青/洋红印刷双色；四步是四个印刷号码牌，表格是虚线分隔的铅印表格。",
+      "signature": "顶部海报条把 16:9 插画的天空与人物原样呈现（不裁脸），下方纸感表格用硬投影与网点把二次元海报语言延续到运维密度里。",
+      "axes": {
+        "luminance": "亮纸 + 重墨块（米黄纸 #fbf3e4 上压 2px 墨线）",
+        "typeFamily": "窄体标题 + 系统正文，标题 700 字重",
+        "color": "米黄纸 + 青 #1597b4 + 洋红 #c62d6d + 墨黑 #231c12",
+        "layout": "顶栏 + 海报条 + 号码牌行 + 纸张面板（单列横向分区）",
+        "density": "中等（行高约 34px，宽间距 10px）",
+        "era": "复古印刷 / 贴纸海报（1970s-1990s）",
+        "material": "平纸 + 硬投影 + 半调网点，无模糊"
+      },
+      "screenshot": {
+        "path": "direction-previews/poster-pop.png",
+        "sha256": "af866cee2ee34993fd7a3e3adf112983414226fcc5c609327f0e594f01c65659"
+      }
+    }
+  ],
+  "decision": {
+    "status": "selected",
+    "selectedDirectionId": "poster-pop",
+    "rationale": "用户在三张同内容同视口的候选中选择 poster-pop。产品适配理由：（1）插画以一张完整构图的顶部海报条出现（不裁脸、不压字），二次元语言落在纸张/墨线/硬投影/半调网点与青洋红双色上，符合「插画是环境，不是内容载体」；（2）正文与表格全部落在米黄纸 #fbf3e4 上（墨色 #231c12 ≈ 13:1），可读性不受 4K 亮色插画任何像素影响，不需要用不透明度去换对比度；（3）四步流程做成四张印刷号码牌，与运维工具「先证书→再代理→再抓包→再下载」的顺序一致，扫读路径为自上而下一条；（4）风险已知并接受：顶部海报条占掉约 172px 首屏高度，同屏表格行数少于 sky-glass；纸感重，长时间密集扫读略累。落选：sky-glass（插画当窗外天空，首屏行数更多但表格需 88% 玻璃面板压住插画，材料复杂度高）、dusk-ink（扫读最快、同屏 8 行，但插画退到 16% 底纹，与用户「日式二次元 + 提供插画」的诉求冲突）。"
+  }
+}

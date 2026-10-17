@@ -1,0 +1,59 @@
+{
+  "schema": "design-pipeline.design-synthesis.v1",
+  "changeId": "anime-webui-redesign",
+  "status": "ready-to-implement",
+  "stage": "implementation",
+  "initializedAt": "2026-10-16T12:02:08.097Z",
+  "updatedAt": "2026-10-16T12:50:00.000Z",
+  "artifactRoot": "design/changes/anime-webui-redesign",
+  "projectRoot": "../../..",
+  "problem": "重做 wxc（微信小程序网课下载器）的本地单页 Web 界面：把现有深色灰板的 static/index.html 改成日式二次元风格，使用用户提供的 3840x2160 动漫插画作为整页背景，中文界面、桌面优先。约束：FastAPI 直接返回 static/index.html，无构建步骤、无外部字体/CDN/依赖；现有 DOM id、/api/* 契约、轮询逻辑与全部功能按钮不变；信息密度保持运维工具级别（抓包状态、条目表、进度、批量下载），不做营销式 hero。产品主线四步：安装 CA 证书 → 开启系统代理 → 在微信 PC 端播放几秒网课 → 回来下载成 mp4。验收：背景插画可见但不影响表格可读性与对比度，四步流程一眼可循，键盘可达，prefers-reduced-motion 有回退，1440x900 与窄屏都不重叠不裁字。",
+  "inputs": {
+    "mode": "requirements-only",
+    "framework": "single-file HTML/CSS/JS, no build step, FastAPI static page",
+    "references": [],
+    "templates": []
+  },
+  "interaction": {
+    "mode": "human-in-loop",
+    "nextCommand": "Implement from DESIGN.md, change design.md, and tasks.md; then run normal design-pipeline QA.",
+    "message": "All synthesis gates passed. Continue without another interaction pause."
+  },
+  "scope": {
+    "budget": "program",
+    "threshold": 60,
+    "status": "fit",
+    "score": 34,
+    "surprise": false,
+    "counts": {
+      "surfaces": 2,
+      "workflows": 4,
+      "integrations": 4,
+      "unknowns": 2,
+      "decisions": 4
+    }
+  },
+  "wayfinder": {
+    "required": false,
+    "status": "not-required",
+    "mapUrl": null
+  },
+  "output": {
+    "path": "DESIGN.md",
+    "status": "validated",
+    "sha256": "406c9ee7b4f90339f1c32e101c5aa24b93c68491a82ec38b2c3177316cc9bc75",
+    "validatedAt": "2026-10-16T12:50:00.000Z"
+  },
+  "evidence": [
+    {
+      "type": "grill",
+      "path": "design/changes/anime-webui-redesign/grill.md",
+      "recordedAt": "2026-10-16T12:02:31.014Z"
+    },
+    {
+      "type": "design-validation",
+      "path": "DESIGN.md",
+      "recordedAt": "2026-10-16T12:03:27.858Z"
+    }
+  ]
+}

@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>方向预览 · wxc 网课下载器界面（三个候选）</title>
+<style>
+/* ============================================================
+   比较外壳（中性、灰度、不含产品风格）——三个候选本身在 .stage 之内
+   ============================================================ */
+:root{
+  --shell-fg:#26262b; --shell-2:#6b6b74; --shell-line:#d7d7de;
+  --ui:system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#f5f5f7;color:var(--shell-fg);font:14px/1.65 var(--ui);letter-spacing:0}
+a{color:#1b5fa8}
+.shell{max-width:1000px;margin:0 auto;padding:26px 20px 8px}
+.shell h1{font-size:20px;margin:0 0 6px;font-weight:600}
+.shell p{margin:0 0 14px;color:var(--shell-2);font-size:13px}
+.legend{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:10px}
+.legend li{border:1px solid var(--shell-line);border-radius:10px;padding:10px 12px;background:#fff}
+.legend b{font-size:13.5px}
+.legend code{background:#f0f0f3;border:1px solid var(--shell-line);border-radius:4px;padding:0 4px;font-size:12px}
+.legend .ax{display:block;color:var(--shell-2);font-size:12.5px;margin-top:4px}
+main{display:flex;flex-direction:column;gap:26px;padding:0 20px 40px;max-width:1520px}
+.cand{margin:0}
+.cap{max-width:1000px;margin:0 auto 8px;font-size:13px;color:var(--shell-2)}
+.cap b{color:var(--shell-fg)}
+.frame{width:864px;height:540px;overflow:hidden;border:1px solid var(--shell-line);border-radius:8px;background:#fff}
+.stage{width:1440px;height:900px;overflow:hidden;position:relative;zoom:.6}
+
+/* 单候选全尺寸 / 截图模式：#<id> 命中某个候选时，隐藏外壳与其它候选 */
+body:has(.cand:target){margin:0;background:#000}
+body:has(.cand:target) .shell,body:has(.cand:target) .cap,body:has(.cand:target) main>:not(:target){display:none}
+body:has(.cand:target) main{padding:0;gap:0;max-width:none;display:block}
+body:has(.cand:target) .cand:target .frame{width:1440px;height:900px;border:0;border-radius:0}
+body:has(.cand:target) .cand:target .stage{zoom:1}
+@media (max-width:1000px){ .frame{width:100%;height:auto;aspect-ratio:1440/900} .stage{zoom:.48} }
+
+/* ============================================================
+   共用夹具样式：三个候选结构一致，只在各自前缀下重新着色
+   夹具字段 = content-fixture.json（真实条目与 /api/status）
+   ============================================================ */
+.stage .scroll{overflow:hidden;flex:1;min-height:0}
+.stage table{width:100%;border-collapse:collapse}
+.stage .ttl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stage .num{font-variant-numeric:tabular-nums}
+.stage button{white-space:nowrap}
+.stage .ops button{flex:none}
+.stage th,.stage .col-s,.stage .col-k{white-space:nowrap}
+.stage .ttl,.stage .err,.stage .q{white-space:normal}
+
+/* ============================ 候选 1：sky-glass ============================ */
+.c1{background:url("../../../../背景.jpg") center/cover no-repeat;font:14px/1.6 var(--ui);color:#2b2438}
+.c1 .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.30) 0%,rgba(255,255,255,.08) 30%,rgba(43,36,64,.12) 74%,rgba(43,36,64,.24) 100%)}
+.c1 .wrap{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:12px 18px 14px}
+.c1 .glass{background:rgba(255,252,253,.88);border:1px solid rgba(255,255,255,.75);border-radius:14px;
+  box-shadow:0 10px 26px rgba(43,36,64,.16),inset 0 1px 0 rgba(255,255,255,.7);backdrop-filter:blur(14px) saturate(1.2)}
+.c1 .head{display:flex;align-items:center;gap:14px;height:54px;padding:0 14px;border-radius:14px}
+.c1 .mark{display:flex;align-items:center;gap:10px}
+.c1 .seal{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-weight:600;font-size:13px;color:#fff;
+  background:linear-gradient(150deg,#5aa9e8,#1f6fbf);box-shadow:0 3px 10px rgba(31,111,191,.35)}
+.c1 .wordmark{font-size:15px;font-weight:600}
+.c1 .wordmark em{display:block;font-style:normal;font-size:11.5px;font-weight:400;color:#5b5470;letter-spacing:.02em}
+.c1 .wordmark u{text-decoration:none;box-shadow:inset 0 -3px 0 rgba(224,86,143,.45)}
+.c1 .pills{display:flex;gap:6px;margin-left:6px}
+.c1 .pill{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid rgba(43,36,64,.12);background:rgba(255,255,255,.62);color:#5b5470;white-space:nowrap}
+.c1 .pill.ok{color:#0e6236;background:#e2f4ea;border-color:rgba(14,98,54,.18)}
+.c1 .pill.bad{color:#b3122a;background:#fdeaec;border-color:rgba(179,18,42,.18)}
+.c1 .stats{margin-left:auto;font-size:12.5px;color:#5b5470}
+.c1 .stats b{color:#2b2438;font-weight:600}
+.c1 .steps{display:flex;align-items:center;gap:0;height:62px;padding:0 16px}
+.c1 .step{display:flex;align-items:center;gap:9px;flex:1}
+.c1 .bead{width:26px;height:26px;border-radius:999px;display:grid;place-items:center;font-size:12px;font-weight:600;
+  border:2px solid rgba(43,36,64,.16);background:rgba(255,255,255,.7);color:#5b5470;flex:none}
+.c1 .step.done .bead{background:#1f6fbf;border-color:#1f6fbf;color:#fff}
+.c1 .step.cur .bead{background:linear-gradient(150deg,#f78bb2,#e0568f);border-color:#e0568f;color:#fff;
+  box-shadow:0 0 0 4px rgba(224,86,143,.22)}
+.c1 .sl{font-size:13px}
+.c1 .sl small{display:block;font-size:11.5px;color:#5b5470}
+.c1 .step.cur .sl{font-weight:600;color:#17588f}
+.c1 .link{height:2px;flex:1;background:linear-gradient(90deg,rgba(31,111,191,.5),rgba(43,36,64,.14));margin:0 10px;border-radius:2px}
+.c1 .card{padding:9px 12px}
+.c1 .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.c1 button{font:inherit;font-size:13px;padding:6px 12px;border-radius:9px;border:1px solid rgba(43,36,64,.14);
+  background:rgba(255,255,255,.72);color:#2b2438;cursor:pointer}
+.c1 button.pri{background:#1f6fbf;border-color:#1f6fbf;color:#fff;box-shadow:0 3px 10px rgba(31,111,191,.28)}
+.c1 button.dng{color:#b3122a;border-color:rgba(179,18,42,.28);background:rgba(255,255,255,.72)}
+.c1 input{font:inherit;font-size:13px;padding:6px 10px;border-radius:9px;border:1px solid rgba(43,36,64,.16);
+  background:rgba(255,255,255,.82);color:#2b2438;min-width:0}
+.c1 .grow{flex:1}
+.c1 label{font-size:12.5px;color:#5b5470}
+.c1 .thead{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 28 14'%3E%3Cg fill='none' stroke='%232b2438' stroke-opacity='.13' stroke-width='1'%3E%3Cpath d='M0 14a14 14 0 0 1 28 0'/%3E%3Cpath d='M-14 14a14 14 0 0 1 28 0'/%3E%3Cpath d='M14 14a14 14 0 0 1 28 0'/%3E%3Cpath d='M0 7a14 14 0 0 1 28 0'/%3E%3Cpath d='M-14 7a14 14 0 0 1 28 0'/%3E%3Cpath d='M14 7a14 14 0 0 1 28 0'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:repeat;background-blend-mode:multiply;background-color:rgba(255,255,255,.58)}
+.c1 table{font-size:13.5px}
+.c1 th{text-align:left;font-weight:600;font-size:12.5px;color:#5b5470;padding:8px 10px;border-bottom:1px solid rgba(43,36,64,.12);white-space:nowrap}
+.c1 td{padding:9px 10px;border-bottom:1px solid rgba(43,36,64,.08);vertical-align:middle}
+.c1 tr:nth-child(odd) td{background:rgba(255,255,255,.28)}
+.c1 .tag{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 7px;border-radius:6px;background:#ffe3ef;color:#a3145a;
+  border:1px solid rgba(163,20,90,.16);transform:rotate(-1.5deg)}
+.c1 .tag.mp4{background:#e4eefc;color:#17588f;border-color:rgba(23,88,143,.16);transform:rotate(1deg)}
+.c1 .tag.ts{background:#fdf0d8;color:#7d4a00;border-color:rgba(125,74,0,.18);transform:rotate(-1deg)}
+.c1 .q{display:block;font-size:11px;color:#5b5470;margin-top:3px}
+.c1 .bar{height:7px;border-radius:99px;background:rgba(43,36,64,.10);overflow:hidden;min-width:96px}
+.c1 .bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#5aa9e8,#1f6fbf)}
+.c1 .indet>i{width:34%;animation:slide 1.2s infinite linear}
+@keyframes slide{from{transform:translateX(-100%)}to{transform:translateX(300%)}}
+.c1 .st{font-size:12px;color:#5b5470;margin-top:3px}
+.c1 .st.ok{color:#0e6236;font-weight:600}
+.c1 .st.err{color:#b3122a;font-weight:600}
+.c1 .err{color:#b3122a;font-size:12px;margin-top:2px;max-width:330px}
+.c1 .ops{display:flex;gap:5px;flex-wrap:wrap}
+.c1 .ops button{padding:4px 9px;font-size:12px;border-radius:7px}
+.c1 .foot{display:flex;align-items:center;gap:8px;padding:9px 12px;font-size:12.5px;color:#5b5470;border-top:1px solid rgba(43,36,64,.10);
+  background:rgba(255,255,255,.42)}
+.c1 .foot code{background:rgba(43,36,64,.06);border-radius:5px;padding:1px 6px;font-size:12px}
+.c1 .dot{width:6px;height:6px;border-radius:99px;background:#e0568f;flex:none}
+.c1 .col-ck{width:26px;padding-left:2px !important}
+.c1 .col-k{width:104px}.c1 .col-s{width:82px}.c1 .col-p{width:238px}.c1 .col-o{width:302px}
+
+/* ============================ 候选 2：dusk-ink ============================ */
+.c2{background:#14101f;color:#eae6f5;font:13px/1.55 var(--ui)}
+.c2 .art{position:absolute;inset:0;background:url("../../../../背景.jpg") center/cover no-repeat;opacity:.16;filter:saturate(.9)}
+.c2 .vig{position:absolute;inset:0;background:radial-gradient(1100px 620px at 22% 18%,rgba(255,92,138,.12),transparent 62%),linear-gradient(180deg,rgba(20,16,31,.35),rgba(20,16,31,.86))}
+.c2 .wrap{position:absolute;inset:0;display:flex;gap:10px;padding:10px}
+.c2 .rail{width:206px;flex:none;background:rgba(29,23,44,.82);border:1px solid rgba(255,92,138,.22);border-radius:10px;
+  padding:12px;display:flex;flex-direction:column;gap:10px}
+.c2 .brand{display:flex;align-items:center;gap:8px}
+.c2 .brand .sq{width:26px;height:26px;border-radius:7px;background:linear-gradient(150deg,#ff5c8a,#a01a4a);box-shadow:0 0 14px rgba(255,92,138,.5)}
+.c2 .brand b{font-size:14px;letter-spacing:.01em}
+.c2 .brand span{display:block;font-size:11px;color:#a79fc4;font-weight:400}
+.c2 .rail h2{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:#a79fc4;margin:4px 0 0;font-weight:600}
+.c2 .timeline{position:relative;display:flex;flex-direction:column;gap:14px;padding-left:22px;margin-top:2px}
+.c2 .timeline:before{content:"";position:absolute;left:6px;top:6px;bottom:14px;width:2px;background:linear-gradient(180deg,#ff5c8a,#3a2f56)}
+.c2 .tl{position:relative}
+.c2 .tl:before{content:"";position:absolute;left:-22px;top:3px;width:10px;height:10px;border-radius:99px;background:#2a2340;border:2px solid #4c3f6b}
+.c2 .tl.done:before{background:#5ee0a0;border-color:#5ee0a0;box-shadow:0 0 10px rgba(94,224,160,.5)}
+.c2 .tl.cur:before{background:#ff5c8a;border-color:#ff5c8a;box-shadow:0 0 12px rgba(255,92,138,.75)}
+.c2 .tl b{font-size:13px;display:block}
+.c2 .tl small{font-size:11px;color:#a79fc4}
+.c2 .tl.cur b{color:#ff9dba}
+.c2 .railnote{margin-top:auto;font-size:11px;color:#a79fc4;border-top:1px solid rgba(255,255,255,.08);padding-top:8px}
+.c2 .railnote code{color:#ffc46b}
+.c2 .main{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.c2 .top{display:flex;align-items:center;gap:6px;background:rgba(29,23,44,.82);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:7px 10px}
+.c2 .pill{font-size:11.5px;padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.06);color:#a79fc4;border:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.c2 .pill.ok{color:#5ee0a0;border-color:rgba(94,224,160,.3);background:rgba(94,224,160,.08)}
+.c2 .stats{margin-left:auto;font-size:12px;color:#a79fc4}
+.c2 .stats b{color:#eae6f5}
+.c2 .bar-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:rgba(29,23,44,.82);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:7px 10px}
+.c2 button{font:inherit;font-size:12.5px;padding:5px 11px;border-radius:7px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#eae6f5;cursor:pointer}
+.c2 button.pri{background:#ff5c8a;border-color:#ff5c8a;color:#22101a;font-weight:600}
+.c2 button.dng{color:#ff6b81;border-color:rgba(255,107,129,.4)}
+.c2 input{font:inherit;font-size:12.5px;padding:5px 9px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:rgba(11,8,20,.6);color:#eae6f5;min-width:0}
+.c2 label{font-size:12px;color:#a79fc4}
+.c2 .grow{flex:1}
+.c2 .panel{flex:1;min-height:0;background:rgba(29,23,44,.82);border:1px solid rgba(255,255,255,.07);border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+.c2 table{font-size:12.5px}
+.c2 th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:600;color:#a79fc4;padding:7px 9px;
+  border-bottom:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}
+.c2 td{padding:6px 9px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:middle}
+.c2 tr:hover td{background:rgba(255,92,138,.07)}
+.c2 .tag{font-size:10.5px;font-weight:600;letter-spacing:.06em;padding:1px 6px;border-radius:4px;background:rgba(255,92,138,.14);color:#ff9dba;
+  border-left:3px solid #ff5c8a}
+.c2 .tag.mp4{background:rgba(96,180,255,.14);color:#8fc6ff;border-left-color:#60b4ff}
+.c2 .tag.ts{background:rgba(255,196,107,.14);color:#ffc46b;border-left-color:#ffc46b}
+.c2 .q{color:#a79fc4;font-size:11px;margin-left:5px}
+.c2 .bar{height:5px;border-radius:2px;background:rgba(255,255,255,.10);overflow:hidden;min-width:90px}
+.c2 .bar>i{display:block;height:100%;background:linear-gradient(90deg,#5ee0a0,#39b47c)}
+.c2 .indet>i{width:30%;background:linear-gradient(90deg,#ff5c8a,#ffc46b);animation:slide 1.1s infinite linear}
+.c2 .st{font-size:11.5px;color:#a79fc4;margin-top:2px}
+.c2 .st.ok{color:#5ee0a0}.c2 .st.err{color:#ff6b81;font-weight:600}
+.c2 .err{color:#ff9d9d;font-size:11.5px;margin-top:1px;max-width:320px}
+.c2 .ops{display:flex;gap:4px}
+.c2 .ops button{padding:3px 8px;font-size:11.5px}
+.c2 .foot{padding:7px 10px;font-size:11.5px;color:#a79fc4;border-top:1px solid rgba(255,255,255,.08);background:rgba(11,8,20,.35);display:flex;gap:8px;align-items:center}
+.c2 .foot code{color:#ffc46b}
+.c2 .dot{width:6px;height:6px;border-radius:99px;background:#ff5c8a}
+.c2 .col-ck{width:24px}.c2 .col-k{width:118px}.c2 .col-s{width:86px}.c2 .col-p{width:210px}.c2 .col-o{width:236px}
+
+/* ============================ 候选 3：poster-pop ============================ */
+.c3{background:#fbf3e4;color:#231c12;font:14px/1.6 var(--ui)}
+.c3 .wrap{position:absolute;inset:0;display:flex;flex-direction:column;gap:10px;padding:12px 16px 14px;background-image:radial-gradient(rgba(35,28,18,.14) 1px,transparent 1px);background-size:9px 9px;background-position:0 0}
+.c3 .bar{display:flex;align-items:center;gap:12px;background:#fffdf6;border:2px solid #231c12;border-radius:4px;padding:7px 12px;
+  box-shadow:4px 4px 0 #231c12}
+.c3 .brand{display:flex;align-items:baseline;gap:9px}
+.c3 .brand b{font-size:17px;letter-spacing:.03em}
+.c3 .brand b em{font-style:normal;color:#c62d6d}
+.c3 .brand small{font-size:12px;color:#6b5c45}
+.c3 .pills{display:flex;gap:6px;margin-left:6px}
+.c3 .pill{font-size:11.5px;padding:2px 8px;border:1.5px solid #231c12;border-radius:3px;background:#fffdf6;white-space:nowrap}
+.c3 .pill.ok{background:#d8f0e2}
+.c3 .pill.bad{background:#fbd9dd}
+.c3 .stats{margin-left:auto;font-size:12.5px;color:#6b5c45}
+.c3 .poster{position:relative;height:172px;border:3px solid #231c12;border-radius:4px;overflow:hidden;box-shadow:6px 6px 0 #231c12;
+  background:url("../../../../背景.jpg") center top/cover no-repeat;flex:none}
+.c3 .poster:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,253,246,.06),rgba(198,45,109,.22))}
+.c3 .poster .cap{position:absolute;left:0;bottom:0;padding:5px 12px;background:#231c12;color:#fbf3e4;font-size:12px;letter-spacing:.04em}
+.c3 .steps{display:flex;gap:8px}
+.c3 .step{flex:1;display:flex;align-items:center;gap:8px;border:2px solid #231c12;border-radius:4px;background:#fffdf6;padding:5px 9px;box-shadow:3px 3px 0 #231c12}
+.c3 .step .n{width:22px;height:22px;border-radius:99px;border:2px solid #231c12;display:grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.c3 .step.done{background:#d8f0e2}
+.c3 .step.cur{background:#ffe9f1;box-shadow:3px 3px 0 #c62d6d}
+.c3 .step.cur .n{background:#c62d6d;border-color:#c62d6d;color:#fffdf6}
+.c3 .step small{display:block;font-size:11px;color:#6b5c45}
+.c3 .step b{font-size:13px}
+.c3 .tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fffdf6;border:2px solid #231c12;border-radius:4px;padding:8px 10px;box-shadow:3px 3px 0 #231c12}
+.c3 button{font:inherit;font-size:13px;padding:5px 11px;border:2px solid #231c12;border-radius:4px;background:#fffdf6;color:#231c12;cursor:pointer;box-shadow:2px 2px 0 #231c12}
+.c3 button.pri{background:#0d7f96;color:#fffdf6;box-shadow:2px 2px 0 #231c12}
+.c3 button.dng{background:#fbd9dd}
+.c3 input{font:inherit;font-size:13px;padding:5px 9px;border:2px solid #231c12;border-radius:4px;background:#fffdf6;color:#231c12;min-width:0}
+.c3 .grow{flex:1}
+.c3 label{font-size:12.5px;color:#6b5c45}
+.c3 .panel{flex:1;min-height:0;display:flex;flex-direction:column;background:#fffdf6;border:2px solid #231c12;border-radius:4px;box-shadow:4px 4px 0 #231c12;overflow:hidden}
+.c3 .panel-head{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:2px solid #231c12;background:#f2e6cf;flex-wrap:wrap}
+.c3 table{font-size:13.5px}
+.c3 th{text-align:left;font-size:12px;font-weight:600;letter-spacing:.02em;color:#4a3f2c;padding:6px 9px;border-bottom:2px solid #231c12;background:#f2e6cf;white-space:nowrap}
+.c3 td{padding:6px 9px;border-bottom:1px dashed rgba(35,28,18,.35);vertical-align:middle}
+.c3 tr:nth-child(odd) td{background:#fdf8ec}
+.c3 .tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 6px;border:1.5px solid #231c12;border-radius:3px;background:#ffe3ef;color:#a3145a}
+.c3 .tag.mp4{background:#d7ecf4;color:#0b5f78}
+.c3 .tag.ts{background:#fdeec9;color:#7d4a00}
+.c3 .q{display:block;font-size:10.5px;color:#6b5c45;margin-top:2px}
+.c3 .bar{height:8px;border:1.5px solid #231c12;border-radius:3px;background:#f2e6cf;overflow:hidden;min-width:100px}
+.c3 .bar>i{display:block;height:100%;background:#1597b4}
+.c3 .indet>i{width:32%;background:repeating-linear-gradient(45deg,#c62d6d 0 6px,#f0a0bd 6px 12px);animation:slide 1.2s infinite linear}
+.c3 .st{font-size:12px;color:#6b5c45;margin-top:2px}
+.c3 .st.ok{color:#0e6236;font-weight:600}
+.c3 .st.err{color:#b3122a;font-weight:600}
+.c3 .err{color:#b3122a;font-size:12px;margin-top:1px;max-width:320px}
+.c3 .ops{display:flex;gap:4px;flex-wrap:wrap}
+.c3 .ops button{padding:3px 8px;font-size:12px;box-shadow:1.5px 1.5px 0 #231c12}
+.c3 .foot{display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:12px;color:#6b5c45;border-top:2px solid #231c12;background:#f2e6cf}
+.c3 .foot code{background:#fffdf6;border:1.5px solid #231c12;border-radius:3px;padding:0 5px}
+.c3 .dot{width:7px;height:7px;border-radius:99px;background:#c62d6d}
+.c3 .col-ck{width:26px}.c3 .col-k{width:104px}.c3 .col-s{width:84px}.c3 .col-p{width:224px}.c3 .col-o{width:262px}
+
+@media (prefers-reduced-motion:reduce){
+  .stage .indet>i,.c1 .indet>i,.c2 .indet>i,.c3 .indet>i{animation:none}
+}
+</style>
+</head>
+<body data-direction-preview>
+
+<header class="shell">
+  <h1>方向预览 · wxc 网课下载器界面（三个候选）</h1>
+  <p>下面是 <b>三个候选方向</b>，不是最终界面。三张都用同一份真实内容（<code>content-fixture.json</code>：12 条抓包记录的真实字段与状态）、同一视口 <b>1440×900</b>、同一状态覆盖；差别在视觉系统本身。点每个候选的「全尺寸」看单张原尺寸，回到 <a href="#top">全部</a>。</p>
+  <ol class="legend">
+    <li><b>① sky-glass · 空色玻璃</b> —— 插画留白最大、文字全部落在奶油色玻璃上；四步做成节奏轨道；标签是微微旋转的番札；面板抬头带 4% 青海波。
+      <span class="ax">明度 light · 字体 人文系统无衬线 · 色彩 天空蓝+樱粉低彩度 · 布局 单列全宽玻璃面板 · 密度 舒适 · 年代 现代 Web 玻璃 · 材料 磨砂玻璃+柔影</span>
+      <span class="ax">适合：想让插画当「窗外天空」、又要在 4K 亮色插画上保证对比度 ≥ 4.5:1。风险：玻璃面板占比大，插画角色会被压到边缘。</span></li>
+    <li><b>② dusk-ink · 暮色墨</b> —— 插画压到 16% 当底纹，左侧竖向步骤轨 + 右侧密集表格；荧光粉描边、等宽数字，13px 紧凑。
+      <span class="ax">明度 dark · 字体 系统无衬线+等宽数字 · 色彩 深靛紫+荧光粉 · 布局 左轨+右表双栏 · 密度 密集 · 年代 当代深色控制台 · 材料 平暗面+霓虹描边</span>
+      <span class="ax">适合：长时间盯着下载队列、要同时看更多行。风险：插画几乎看不见，「二次元」只剩色彩与描边。</span></li>
+    <li><b>③ poster-pop · 海报波普</b> —— 插画裁成一张带硬边阴影的「海报」放在顶部，其余是米黄纸张、2px 墨线、硬投影、半调网点；青色/洋红印刷双色。
+      <span class="ax">明度 亮纸+重墨块 · 字体 窄体标题+系统正文 · 色彩 米黄纸+青+洋红+墨 · 布局 顶栏+海报条+纸张表格 · 密度 中等宽间距 · 年代 复古印刷/贴纸 · 材料 平纸+硬投影+网点</span>
+      <span class="ax">适合：最像「二次元海报」而不与表格抢注意力，插画以完整构图出现。风险：纸感重，长时间看密集表格略累。</span></li>
+  </ol>
+</header>
+
+<main id="top">
+
+  <!-- ==================== 候选 1 ==================== -->
+  <section class="cand" id="sky-glass" data-direction-id="sky-glass">
+    <p class="cap"><b>① sky-glass · 空色玻璃</b> · <a href="#sky-glass">全尺寸</a></p>
+    <div class="frame"><div class="stage c1">
+      <div class="veil"></div>
+      <div class="wrap">
+        <header class="head glass">
+          <div class="mark">
+            <span class="seal">wxc</span>
+            <span class="wordmark"><u>网课下载器</u><em>本机抓包 · 127.0.0.1:8900</em></span>
+          </div>
+          <div class="pills">
+            <span class="pill ok">抓包：运行中</span>
+            <span class="pill ok">系统代理：127.0.0.1:8899</span>
+            <span class="pill ok">CA 证书：已信任</span>
+            <span class="pill ok">ffmpeg：就绪</span>
+          </div>
+          <div class="stats num">共 <b>12</b> 条 · 已完成 <b>7</b> · 失败 <b>1</b> · 下载中 <b>2</b></div>
+        </header>
+
+        <section class="steps glass">
+          <div class="step done"><span class="bead">1</span><span class="sl">安装 CA 证书<small>已信任 · 根存储</small></span></div>
+          <i class="link"></i>
+          <div class="step done"><span class="bead">2</span><span class="sl">开启系统代理<small>127.0.0.1:8899</small></span></div>
+          <i class="link"></i>
+          <div class="step cur"><span class="bead">3</span><span class="sl">微信里播放网课<small>正在等待新的媒体请求</small></span></div>
+          <i class="link"></i>
+          <div class="step"><span class="bead">4</span><span class="sl">下载到本地<small>勾选条目 → 下载选中</small></span></div>
+        </section>
+
+        <section class="card glass row">
+          <button class="pri">开启系统代理</button>
+          <button>关闭系统代理</button>
+          <button>安装 CA 证书</button>
+          <button>刷新状态</button>
+          <span class="grow"></span>
+          <label>下载目录</label><input class="grow" style="max-width:300px" value=".data\downloads">
+          <label>并发</label><input style="width:56px;text-align:right" value="2">
+          <button>保存设置</button><button>打开目录</button>
+        </section>
+
+        <section class="card glass row">
+          <input class="grow" placeholder="手动导入：媒体直链（m3u8/mp4…）或返回视频地址的接口 URL">
+          <input style="width:170px" placeholder="标题（可留空）">
+          <button>导入</button>
+          <input style="width:170px" placeholder="搜索标题 / 地址">
+        </section>
+
+        <section class="card glass" style="flex:1;min-height:0;display:flex;flex-direction:column;padding:0;overflow:hidden">
+          <div class="row" style="padding:9px 12px;border-bottom:1px solid rgba(43,36,64,.10)">
+            <label><input type="checkbox"> 全选</label>
+            <button class="pri">下载选中</button><button>下载全部未完成</button><button>取消全部</button>
+            <button class="dng">清理 TS 分片条目</button>
+            <span class="grow"></span>
+            <label><input type="checkbox"> 显示已忽略</label><button>刷新</button>
+          </div>
+          <div class="scroll">
+            <table>
+              <thead class="thead"><tr>
+                <th class="col-ck"></th><th class="col-k">类型</th><th>标题</th><th>主机</th>
+                <th class="col-s">大小</th><th class="col-p">进度 / 状态</th><th class="col-o">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                  <td><div class="ttl" title="高等数学（上）· 第3章 第2节 导数的定义">高等数学（上）· 第3章 第2节 导数的定义</div></td>
+                  <td style="color:#5b5470">vod.school.edu.cn</td><td class="num" style="color:#5b5470">128.4 MB</td>
+                  <td><div class="st ok">完成 · 12:36</div></td>
+                  <td><div class="ops"><button>重下</button><button>播放</button><button>定位</button><button>忽略</button><button class="dng">删除</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag mp4">MP4</span><span class="q num">960x540</span></td>
+                  <td><div class="ttl" title="大学英语视听说 · Unit 4 Campus Life">大学英语视听说 · Unit 4 Campus Life</div></td>
+                  <td style="color:#5b5470">media2.school.edu.cn</td><td class="num" style="color:#5b5470">84.1 MB</td>
+                  <td><div class="bar"><i style="width:62%"></i></div><div class="st num">下载中 · 62% · 02:14 / 12:05</div></td>
+                  <td><div class="ops"><button>取消</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag ts">TS 片</span></td>
+                  <td><div class="ttl" title="马克思主义基本原理 · 第5章">马克思主义基本原理 · 第5章</div><div class="q" style="color:#7d4a00">视频分片，请点「下载整节课」</div></td>
+                  <td style="color:#5b5470">vod.school.edu.cn</td><td class="num" style="color:#5b5470">3.2 MB</td>
+                  <td><div class="st">已识别的加密分片，不单独下载</div></td>
+                  <td><div class="ops"><button class="pri">下载整节课</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag">HLS</span><span class="q num">640x360</span></td>
+                  <td><div class="ttl" title="线性代数 · 第1章 行列式">线性代数 · 第1章 行列式</div></td>
+                  <td style="color:#5b5470">vod.school.edu.cn</td><td class="num" style="color:#5b5470">62.8 MB</td>
+                  <td><div class="st">未下载</div></td>
+                  <td><div class="ops"><button class="pri">下载</button><button>播放</button><button>忽略</button><button class="dng">删除</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                  <td><div class="ttl" title="计算机网络 · 第2章 物理层">计算机网络 · 第2章 物理层</div>
+                      <div class="err">链接带时效签名已失效：回微信重新播放该课时，刷新后重下。</div></td>
+                  <td style="color:#5b5470">vod.school.edu.cn</td><td class="num" style="color:#5b5470">210.7 MB</td>
+                  <td><div class="st err">失败 · HTTP 403</div></td>
+                  <td><div class="ops"><button class="pri">重下</button><button>播放</button><button>忽略</button><button class="dng">删除</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag mp4">MP4</span><span class="q num">1280x720</span></td>
+                  <td><div class="ttl" title="概率论与数理统计 · 第4章 大数定律">概率论与数理统计 · 第4章 大数定律</div></td>
+                  <td style="color:#5b5470">media.school.edu.cn</td><td class="num" style="color:#5b5470">96.5 MB</td>
+                  <td><div class="bar indet"><i></i></div><div class="st">排队中 · 等待并发空位</div></td>
+                  <td><div class="ops"><button>取消</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="foot"><span class="dot"></span>下载目录 <code>.data\downloads</code> · 并发 2 · 代理开着会一直抓包，<b>下完记得点「关闭系统代理」</b></div>
+        </section>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ==================== 候选 2 ==================== -->
+  <section class="cand" id="dusk-ink" data-direction-id="dusk-ink">
+    <p class="cap"><b>② dusk-ink · 暮色墨</b> · <a href="#dusk-ink">全尺寸</a></p>
+    <div class="frame"><div class="stage c2">
+      <div class="art"></div><div class="vig"></div>
+      <div class="wrap">
+        <aside class="rail">
+          <div class="brand"><span class="sq"></span><div><b>wxc</b><span>本机抓包 · 127.0.0.1:8900</span></div></div>
+          <h2>四步流程</h2>
+          <div class="timeline">
+            <div class="tl done"><b>安装 CA 证书</b><small>已信任 · 根存储</small></div>
+            <div class="tl done"><b>开启系统代理</b><small>127.0.0.1:8899</small></div>
+            <div class="tl cur"><b>微信里播放网课</b><small>等待新的媒体请求</small></div>
+            <div class="tl"><b>下载到本地</b><small>勾选条目 → 下载选中</small></div>
+          </div>
+          <div class="railnote">下载目录 <code>.data\downloads</code><br>并发 2 · 代理开着会一直抓包，<b>下完记得关闭系统代理</b></div>
+        </aside>
+        <div class="main">
+          <div class="top">
+            <span class="pill ok">抓包：运行中</span><span class="pill ok">代理：127.0.0.1:8899</span>
+            <span class="pill ok">CA：已信任</span><span class="pill ok">ffmpeg：就绪</span>
+            <span class="stats num">共 <b>12</b> 条 · 完成 <b>7</b> · 失败 <b>1</b> · 进行中 <b>2</b></span>
+          </div>
+          <div class="bar-row">
+            <button class="pri">开启系统代理</button><button>关闭系统代理</button><button>安装 CA 证书</button><button>刷新状态</button>
+            <span class="grow"></span>
+            <label>目录</label><input class="grow" style="max-width:220px" value=".data\downloads">
+            <label>并发</label><input style="width:48px;text-align:right" value="2"><button>保存</button>
+          </div>
+          <div class="bar-row">
+            <input class="grow" placeholder="手动导入：媒体直链（m3u8/mp4…）或接口 URL">
+            <input style="width:150px" placeholder="标题（可留空）"><button>导入</button>
+            <input style="width:150px" placeholder="搜索标题 / 地址">
+          </div>
+          <div class="panel">
+            <div class="bar-row" style="border:0;border-bottom:1px solid rgba(255,255,255,.08);border-radius:0;background:rgba(255,255,255,.02)">
+              <label>全选</label><button class="pri">下载选中</button><button>下载全部未完成</button><button>取消全部</button>
+              <button class="dng">清理 TS 分片条目</button><span class="grow"></span><label>显示已忽略</label><button>刷新</button>
+            </div>
+            <div class="scroll">
+              <table>
+                <thead><tr>
+                  <th class="col-ck"></th><th class="col-k">类型</th><th>标题</th><th>主机</th>
+                  <th class="col-s">大小</th><th class="col-p">进度 / 状态</th><th class="col-o">操作</th>
+                </tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                    <td><div class="ttl" title="高等数学（上）· 第3章 第2节 导数的定义">高等数学（上）· 第3章 第2节 导数的定义</div></td>
+                    <td style="color:#a79fc4">vod.school.edu.cn</td><td class="num" style="color:#a79fc4">128.4 MB</td>
+                    <td><div class="st ok">完成 · 12:36</div></td>
+                    <td><div class="ops"><button>重下</button><button>播放</button><button>定位</button><button>忽略</button><button class="dng">删除</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag mp4">MP4</span><span class="q num">960x540</span></td>
+                    <td><div class="ttl" title="大学英语视听说 · Unit 4 Campus Life">大学英语视听说 · Unit 4 Campus Life</div></td>
+                    <td style="color:#a79fc4">media2.school.edu.cn</td><td class="num" style="color:#a79fc4">84.1 MB</td>
+                    <td><div class="bar"><i style="width:62%"></i></div><div class="st num">下载中 · 62% · 02:14 / 12:05</div></td>
+                    <td><div class="ops"><button>取消</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag ts">TS 片</span></td>
+                    <td><div class="ttl" title="马克思主义基本原理 · 第5章">马克思主义基本原理 · 第5章</div><div class="q" style="color:#ffc46b">视频分片，请点「下载整节课」</div></td>
+                    <td style="color:#a79fc4">vod.school.edu.cn</td><td class="num" style="color:#a79fc4">3.2 MB</td>
+                    <td><div class="st">已识别的加密分片，不单独下载</div></td>
+                    <td><div class="ops"><button class="pri">下载整节课</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag">HLS</span><span class="q num">640x360</span></td>
+                    <td><div class="ttl" title="线性代数 · 第1章 行列式">线性代数 · 第1章 行列式</div></td>
+                    <td style="color:#a79fc4">vod.school.edu.cn</td><td class="num" style="color:#a79fc4">62.8 MB</td>
+                    <td><div class="st">未下载</div></td>
+                    <td><div class="ops"><button class="pri">下载</button><button>播放</button><button>忽略</button><button class="dng">删除</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                    <td><div class="ttl" title="计算机网络 · 第2章 物理层">计算机网络 · 第2章 物理层</div>
+                        <div class="err">链接带时效签名已失效：回微信重新播放该课时，刷新后重下。</div></td>
+                    <td style="color:#a79fc4">vod.school.edu.cn</td><td class="num" style="color:#a79fc4">210.7 MB</td>
+                    <td><div class="st err">失败 · HTTP 403</div></td>
+                    <td><div class="ops"><button class="pri">重下</button><button>播放</button><button>忽略</button><button class="dng">删除</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag mp4">MP4</span><span class="q num">1280x720</span></td>
+                    <td><div class="ttl" title="概率论与数理统计 · 第4章 大数定律">概率论与数理统计 · 第4章 大数定律</div></td>
+                    <td style="color:#a79fc4">media.school.edu.cn</td><td class="num" style="color:#a79fc4">96.5 MB</td>
+                    <td><div class="bar indet"><i></i></div><div class="st">排队中 · 等待并发空位</div></td>
+                    <td><div class="ops"><button>取消</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag">HLS</span><span class="q num">854x480</span></td>
+                    <td><div class="ttl" title="思想道德与法治 · 第6章 尊法学法守法用法">思想道德与法治 · 第6章 尊法学法守法用法</div></td>
+                    <td style="color:#a79fc4">vod2.school.edu.cn</td><td class="num" style="color:#a79fc4">118.0 MB</td>
+                    <td><div class="bar"><i style="width:18%"></i></div><div class="st num">下载中 · 18% · 01:02 / 09:41</div></td>
+                    <td><div class="ops"><button>取消</button></div></td>
+                  </tr>
+                  <tr>
+                    <td class="col-ck"><input type="checkbox"></td>
+                    <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                    <td><div class="ttl" title="数据结构与算法 · 第7章 图的最短路径">数据结构与算法 · 第7章 图的最短路径</div></td>
+                    <td style="color:#a79fc4">vod.school.edu.cn</td><td class="num" style="color:#a79fc4">156.2 MB</td>
+                    <td><div class="st">未下载</div></td>
+                    <td><div class="ops"><button class="pri">下载</button><button>忽略</button><button class="dng">删除</button></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="foot"><span class="dot"></span>下载目录 <code>.data\downloads</code> · 并发 2 · 代理开着会一直抓包，<b>下完记得关闭系统代理</b></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ==================== 候选 3 ==================== -->
+  <section class="cand" id="poster-pop" data-direction-id="poster-pop">
+    <p class="cap"><b>③ poster-pop · 海报波普</b> · <a href="#poster-pop">全尺寸</a></p>
+    <div class="frame"><div class="stage c3">
+      <div class="wrap">
+        <div class="bar">
+          <div class="brand"><b>wxc<em>·</em>网课下载器</b><small>本机抓包 · 127.0.0.1:8900</small></div>
+          <div class="pills">
+            <span class="pill ok">抓包：运行中</span><span class="pill ok">代理：127.0.0.1:8899</span>
+            <span class="pill ok">CA：已信任</span><span class="pill ok">ffmpeg：就绪</span>
+          </div>
+          <div class="stats num">共 <b>12</b> 条 · 完成 <b>7</b> · 失败 <b>1</b> · 进行中 <b>2</b></div>
+        </div>
+
+        <div class="poster"><span class="cap">天空列车 · 本地离线学习计划 / 2026 秋</span></div>
+
+        <div class="steps">
+          <div class="step done"><span class="n">1</span><div><b>安装 CA 证书</b><small>已信任 · 根存储</small></div></div>
+          <div class="step done"><span class="n">2</span><div><b>开启系统代理</b><small>127.0.0.1:8899</small></div></div>
+          <div class="step cur"><span class="n">3</span><div><b>微信里播放网课</b><small>等待新的媒体请求</small></div></div>
+          <div class="step"><span class="n">4</span><div><b>下载到本地</b><small>勾选条目 → 下载选中</small></div></div>
+        </div>
+
+        <div class="tools">
+          <button class="pri">开启系统代理</button><button>关闭系统代理</button><button>安装 CA 证书</button><button>刷新状态</button>
+          <span class="grow"></span>
+          <label>下载目录</label><input class="grow" style="max-width:250px" value=".data\downloads">
+          <label>并发</label><input style="width:52px;text-align:right" value="2">
+          <button>保存设置</button><button>打开目录</button>
+        </div>
+
+        <div class="tools">
+          <input class="grow" placeholder="手动导入：媒体直链（m3u8/mp4…）或返回视频地址的接口 URL">
+          <input style="width:170px" placeholder="标题（可留空）"><button>导入</button>
+          <input style="width:170px" placeholder="搜索标题 / 地址">
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <label><input type="checkbox"> 全选</label>
+            <button class="pri">下载选中</button><button>下载全部未完成</button><button>取消全部</button>
+            <button class="dng">清理 TS 分片条目</button>
+            <span class="grow"></span><label><input type="checkbox"> 显示已忽略</label><button>刷新</button>
+          </div>
+          <div class="scroll">
+            <table>
+              <thead><tr>
+                <th class="col-ck"></th><th class="col-k">类型</th><th>标题</th><th>主机</th>
+                <th class="col-s">大小</th><th class="col-p">进度 / 状态</th><th class="col-o">操作</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                  <td><div class="ttl" title="高等数学（上）· 第3章 第2节 导数的定义">高等数学（上）· 第3章 第2节 导数的定义</div></td>
+                  <td style="color:#6b5c45">vod.school.edu.cn</td><td class="num" style="color:#6b5c45">128.4 MB</td>
+                  <td><div class="st ok">完成 · 12:36</div></td>
+                  <td><div class="ops"><button>重下</button><button>播放</button><button>定位</button><button>忽略</button><button class="dng">删除</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag mp4">MP4</span><span class="q num">960x540</span></td>
+                  <td><div class="ttl" title="大学英语视听说 · Unit 4 Campus Life">大学英语视听说 · Unit 4 Campus Life</div></td>
+                  <td style="color:#6b5c45">media2.school.edu.cn</td><td class="num" style="color:#6b5c45">84.1 MB</td>
+                  <td><div class="bar"><i style="width:62%"></i></div><div class="st num">下载中 · 62% · 02:14 / 12:05</div></td>
+                  <td><div class="ops"><button>取消</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag ts">TS 片</span></td>
+                  <td><div class="ttl" title="马克思主义基本原理 · 第5章">马克思主义基本原理 · 第5章</div><div class="q" style="color:#7d4a00">视频分片，请点「下载整节课」</div></td>
+                  <td style="color:#6b5c45">vod.school.edu.cn</td><td class="num" style="color:#6b5c45">3.2 MB</td>
+                  <td><div class="st">已识别的加密分片，不单独下载</div></td>
+                  <td><div class="ops"><button class="pri">下载整节课</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag">HLS</span><span class="q num">640x360</span></td>
+                  <td><div class="ttl" title="线性代数 · 第1章 行列式">线性代数 · 第1章 行列式</div></td>
+                  <td style="color:#6b5c45">vod.school.edu.cn</td><td class="num" style="color:#6b5c45">62.8 MB</td>
+                  <td><div class="st">未下载</div></td>
+                  <td><div class="ops"><button class="pri">下载</button><button>播放</button><button>忽略</button><button class="dng">删除</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag">HLS</span><span class="q num">1280x720</span></td>
+                  <td><div class="ttl" title="计算机网络 · 第2章 物理层">计算机网络 · 第2章 物理层</div>
+                      <div class="err">链接带时效签名已失效：回微信重新播放该课时，刷新后重下。</div></td>
+                  <td style="color:#6b5c45">vod.school.edu.cn</td><td class="num" style="color:#6b5c45">210.7 MB</td>
+                  <td><div class="st err">失败 · HTTP 403</div></td>
+                  <td><div class="ops"><button class="pri">重下</button><button>播放</button><button>忽略</button><button class="dng">删除</button></div></td>
+                </tr>
+                <tr>
+                  <td class="col-ck"><input type="checkbox"></td>
+                  <td><span class="tag mp4">MP4</span><span class="q num">1280x720</span></td>
+                  <td><div class="ttl" title="概率论与数理统计 · 第4章 大数定律">概率论与数理统计 · 第4章 大数定律</div></td>
+                  <td style="color:#6b5c45">media.school.edu.cn</td><td class="num" style="color:#6b5c45">96.5 MB</td>
+                  <td><div class="bar indet"><i></i></div><div class="st">排队中 · 等待并发空位</div></td>
+                  <td><div class="ops"><button>取消</button></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="foot"><span class="dot"></span>下载目录 <code>.data\downloads</code> · 并发 2 · 代理开着会一直抓包，<b>下完记得点「关闭系统代理」</b></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+</main>
+</body>
+</html>

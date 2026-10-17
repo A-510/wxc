@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="heroTitle heroDesc">
+  <title id="heroTitle">wxc · 微信小程序网课下载器：产品名、一句话说明与四步主线</title>
+  <desc id="heroDesc">左边是产品名 wxc 与一句话说明：把学校小程序里的网课存成本地 mp4，离线看；播放时才抓包，不猜接口、不反编译、不碰 DRM。右边是四张号码牌组成的四步主线——1 安装 CA 证书（受信任根证书，不需要管理员）、2 开启系统代理（指向 127.0.0.1:8899）、3 微信里播放几秒（播放页才会下发带签名的地址）、4 回到界面点下载（ffmpeg 合并，落在本机）。左下角图例说明前两步只做一次，后两步每次下载都要走。</desc>
+
+  <defs>
+    <pattern id="halftone" width="9" height="9" patternUnits="userSpaceOnUse">
+      <circle cx="2.5" cy="2.5" r="1.1" fill="#231c12" fill-opacity="0.13"/>
+    </pattern>
+  </defs>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <rect width="1200" height="420" rx="6" fill="#fbf3e4"/>
+    <rect width="1200" height="420" rx="6" fill="url(#halftone)"/>
+    <rect x="1" y="1" width="1198" height="418" rx="6" fill="none" stroke="#231c12" stroke-width="2"/>
+
+    <g id="title-block">
+      <circle cx="63" cy="57" r="5" fill="#c62d6d"/>
+      <text x="80" y="64" font-size="20" font-weight="600" fill="#6b5c45">微信小程序网课 · Windows 本地抓包下载器</text>
+      <text x="56" y="152" font-size="76" font-weight="700" fill="#231c12">wxc</text>
+      <text x="208" y="152" font-size="36" font-weight="600" fill="#231c12">网课下载器</text>
+      <text x="56" y="202" font-size="27" fill="#231c12">把学校小程序里的网课存成本地 mp4，离线看</text>
+      <text x="56" y="238" font-size="21" fill="#6b5c45">播放时才抓包：不猜接口、不反编译、不碰 DRM</text>
+
+      <path d="M56 314 H 620" stroke="#231c12" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+      <g id="legend">
+        <rect x="61.5" y="338.5" width="9" height="9" transform="rotate(45 66 343)" fill="#c62d6d"/>
+        <text x="84" y="350" font-size="20" fill="#231c12">前两步只做一次：装证书、开系统代理</text>
+        <rect x="61.5" y="368.5" width="9" height="9" transform="rotate(45 66 373)" fill="#0d7f96"/>
+        <text x="84" y="380" font-size="20" fill="#231c12">后两步每次下载：微信里播放几秒，再回来点下载</text>
+      </g>
+    </g>
+
+    <g id="four-step-chain">
+      <g id="chain-arrows" fill="#0d7f96">
+        <rect x="920.5" y="127" width="3" height="6"/>
+        <path d="M916 133 H928 L922 140 Z"/>
+        <rect x="920.5" y="215" width="3" height="6"/>
+        <path d="M916 221 H928 L922 228 Z"/>
+        <rect x="920.5" y="303" width="3" height="6"/>
+        <path d="M916 309 H928 L922 316 Z"/>
+      </g>
+
+      <g id="step-1" transform="translate(700 52)">
+        <rect x="3" y="3" width="444" height="74" rx="3" fill="#231c12"/>
+        <rect width="444" height="74" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <circle cx="34" cy="37" r="15" fill="#f2e6cf" stroke="#231c12" stroke-width="2"/>
+        <text x="34" y="43" font-size="18" font-weight="600" fill="#231c12" text-anchor="middle">1</text>
+        <text x="60" y="33" font-size="22" font-weight="600" fill="#231c12">安装 CA 证书</text>
+        <text x="60" y="58" font-size="20" fill="#6b5c45">装进「受信任根证书」，不需要管理员</text>
+      </g>
+
+      <g id="step-2" transform="translate(700 140)">
+        <rect x="3" y="3" width="444" height="74" rx="3" fill="#231c12"/>
+        <rect width="444" height="74" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <circle cx="34" cy="37" r="15" fill="#f2e6cf" stroke="#231c12" stroke-width="2"/>
+        <text x="34" y="43" font-size="18" font-weight="600" fill="#231c12" text-anchor="middle">2</text>
+        <text x="60" y="33" font-size="22" font-weight="600" fill="#231c12">开启系统代理</text>
+        <text x="60" y="58" font-size="20" fill="#6b5c45">系统代理指向 127.0.0.1:8899</text>
+      </g>
+
+      <g id="step-3" transform="translate(700 228)">
+        <rect x="3" y="3" width="444" height="74" rx="3" fill="#231c12"/>
+        <rect width="444" height="74" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <circle cx="34" cy="37" r="15" fill="#f2e6cf" stroke="#231c12" stroke-width="2"/>
+        <text x="34" y="43" font-size="18" font-weight="600" fill="#231c12" text-anchor="middle">3</text>
+        <text x="60" y="33" font-size="22" font-weight="600" fill="#231c12">微信里播放几秒</text>
+        <text x="60" y="58" font-size="20" fill="#6b5c45">播放页才会下发带签名的地址</text>
+      </g>
+
+      <g id="step-4" transform="translate(700 316)">
+        <rect x="3" y="3" width="444" height="74" rx="3" fill="#231c12"/>
+        <rect width="444" height="74" rx="3" fill="#d7ecf4" stroke="#231c12" stroke-width="2"/>
+        <circle cx="34" cy="37" r="15" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <text x="34" y="43" font-size="18" font-weight="600" fill="#231c12" text-anchor="middle">4</text>
+        <text x="60" y="33" font-size="22" font-weight="600" fill="#231c12">回到界面点下载</text>
+        <text x="60" y="58" font-size="20" fill="#0b5f78">ffmpeg 合并，落在本机</text>
+        <rect x="352" y="13" width="76" height="26" rx="3" fill="#fffdf6" stroke="#0d7f96" stroke-width="1.5"/>
+        <text x="390" y="31" font-size="18" fill="#0b5f78" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">mp4</text>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,44 @@
+/* ============================================================================
+   方案 3 · 落版盖章（PLATE DROP）
+   中央思想：页面其余部分第 0 帧就在位；只有四张号码牌从上方 24px 处"落版"，
+   每次落版是 3 帧离散硬停（steps(3,end)，机械感是声明过的风格而非意外），
+   硬投影在同一动画里由 11px 压到 3px（触底），落地后底部 2px 墨线自左划出。
+   四次冲击构成节奏；随后表格行自顶部依序落墨。840ms。
+   ----------------------------------------------------------------------------
+   为什么全部选择器都要挂在 `html.c3.entering` 上：
+   这个页面每 1500ms 轮询一次并把 `#rows` 的 innerHTML 整体重写，行节点因此会被重建；
+   若把入场动画直接挂在 `tbody tr` 上，每一轮轮询都会让所有行动画重新播一遍（实测：轮询后 8 行
+   全部重新进入裁切态）。所以入场动画只在 `entering` 标记存在期间生效，入场结束（或跳过）后
+   由 finish 脚本摘掉该标记；此后重建的行不再带任何入场动画。
+   ========================================================================== */
+
+/* 号码牌落版：位移 3 帧硬停 + 硬投影压缩（触底），无过冲、无回弹 */
+html.c3.entering .step{position:relative;animation:c3Drop 150ms steps(3,end) var(--d) both}
+@keyframes c3Drop{
+  from{transform:translateY(-24px);box-shadow:3px 11px 0 var(--ink)}
+  to  {transform:none;box-shadow:3px 3px 0 var(--ink)}}
+
+/* 落版划线：底部 2px 墨线自左向右划出（线性、单次、不循环） */
+html.c3.entering .step::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--ink);transform:scaleX(0);transform-origin:left center;
+  animation:c3Seal 160ms linear calc(var(--d) + 150ms) both}
+@keyframes c3Seal{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+html.c3.entering .step:nth-child(1){--d:60ms}
+html.c3.entering .step:nth-child(2){--d:140ms}
+html.c3.entering .step:nth-child(3){--d:220ms}
+html.c3.entering .step:nth-child(4){--d:300ms}
+
+/* 表格行落墨：自顶部依序擦出（几何通道，40ms 步进，最多 8 行） */
+html.c3.entering tbody tr{animation:c3Row 130ms cubic-bezier(.16,1,.3,1) var(--rd) both}
+@keyframes c3Row{from{clip-path:inset(0 100% 0 0);transform:translateX(-8px)}
+                 to{clip-path:inset(0 0 0 0);transform:none}}
+html.c3.entering tbody tr:nth-child(1){--rd:430ms}
+html.c3.entering tbody tr:nth-child(2){--rd:470ms}
+html.c3.entering tbody tr:nth-child(3){--rd:510ms}
+html.c3.entering tbody tr:nth-child(4){--rd:550ms}
+html.c3.entering tbody tr:nth-child(5){--rd:590ms}
+html.c3.entering tbody tr:nth-child(6){--rd:630ms}
+html.c3.entering tbody tr:nth-child(7){--rd:670ms}
+html.c3.entering tbody tr:nth-child(8){--rd:710ms}
+html.c3.entering tbody tr:nth-child(n+9){--rd:710ms;animation-duration:1ms}

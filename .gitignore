@@ -1,0 +1,25 @@
+# ---- 运行期数据（抓包库、下载的视频；含 Cookie / Token，永不入库） ----
+.data/
+.venv/
+__pycache__/
+*.pyc
+
+# ---- 构建产物（spec 里会写进本机绝对路径） ----
+/dist/
+/build/
+*.spec
+# 由 图标.jpg 在构建时生成
+assets/wxc.ico
+
+# ---- 设计流水线的内部状态（工具噪音 + 原始提问原文） ----
+.design-pipeline/
+job-plan.json
+interaction.json
+design/**/events.jsonl
+design/**/state.json
+design/**/*.backup-*
+design/**/evidence/
+
+# ---- 实拍截图：画面上有你本机的绝对路径，本地留着但不入库 ----
+design/changes/*/qa/screenshots/ui-live-*.png
+design/changes/*/qa/screenshots/ui-[0-9]*.png

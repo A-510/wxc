@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="c1 entering">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wxc · 网课下载器</title>
+<style>
+  :root{
+    /* 旧变量名保留：页面内 JS 的模板字符串直接引用 var(--warn)/var(--err)，值映射到海报波普色板 */
+    --bg:#fbf3e4; --panel:#fffdf6; --line:rgba(35,28,18,.14); --fg:#231c12; --muted:#6b5c45;
+    --accent:#0d7f96; --ok:#0e6236; --warn:#7d4a00; --err:#b3122a;
+    /* 海报波普追加 */
+    --paper:#fbf3e4; --sheet:#fffdf6; --sheet-2:#f2e6cf; --ink:#231c12; --ink-2:#4a3f2c;
+    --cyan:#1597b4; --cyan-deep:#0d7f96; --cyan-soft:#d7ecf4; --cyan-ink:#0b5f78;
+    --magenta:#c62d6d; --magenta-soft:#ffe9f1; --magenta-ink:#a3145a;
+    --ok-bg:#d8f0e2; --warn-bg:#fdeec9; --err-bg:#fbd9dd;
+    --row-alt:#fdf8ec; --row-done:#eaf6ec; --row-err:#fdeef0; --row-hover:#eaf4f7;
+    --ui:system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    height:100dvh;overflow:hidden;
+    background-color:var(--paper);
+    background-image:radial-gradient(rgba(35,28,18,.13) 1px,transparent 1px);
+    background-size:9px 9px;
+    color:var(--ink);font:14px/1.6 var(--ui);letter-spacing:0;line-break:strict;word-break:normal;
+  }
+  .wrap{max-width:1440px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;gap:10px;padding:12px 16px 14px}
+
+  /* ---------------------------------------------------------------- 顶栏 */
+  .topbar{flex:none;display:flex;align-items:center;gap:12px;background:var(--sheet);border:2px solid var(--ink);
+       border-radius:4px;padding:5px 12px;box-shadow:4px 4px 0 var(--ink)}
+  .brand{display:flex;align-items:baseline;gap:9px;min-width:0}
+  .brand b{font-size:17px;line-height:1.25;font-weight:600;white-space:nowrap}
+  .brand b em{font-style:normal;color:var(--magenta)}
+  .brand small{font-size:12px;color:var(--muted);white-space:nowrap}
+  .pills{display:flex;gap:6px;margin-left:6px;flex-wrap:wrap}
+  .pill{font-size:11.5px;padding:2px 8px;border:1.5px solid var(--ink);border-radius:3px;background:var(--sheet);white-space:nowrap}
+  .pill.ok{background:var(--ok-bg)}
+  .pill.bad{background:var(--err-bg)}
+  .stats{margin-left:auto;font-size:12.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .stats b{color:var(--ink);font-weight:600}
+
+  /* ------------------------------------------------------------ 海报条 */
+  .poster{position:relative;flex:none;height:clamp(118px,19vh,172px);border:3px solid var(--ink);border-radius:4px;
+          overflow:hidden;box-shadow:6px 6px 0 var(--ink);background-color:var(--sheet);
+          background-image:url("/art/background");background-position:center top;background-size:cover;background-repeat:no-repeat}
+  .poster:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,253,246,.06),rgba(198,45,109,.20))}
+  .poster .cap{position:absolute;left:0;bottom:0;z-index:1;padding:5px 12px;background:var(--ink);color:var(--paper);font-size:12px}
+
+  /* -------------------------------------------------------- 四步号码牌 */
+  .steps{flex:none;display:flex;gap:8px;list-style:none;margin:0;padding:0}
+  .step{flex:1;min-width:0;display:flex;align-items:center;gap:8px;border:2px solid var(--ink);border-radius:4px;
+        background:var(--sheet);padding:5px 9px;box-shadow:3px 3px 0 var(--ink)}
+  .step > div{min-width:0;flex:1}
+  .step .n{flex:none;width:22px;height:22px;border-radius:99px;border:2px solid var(--ink);display:grid;place-items:center;
+           font-size:12px;font-weight:600}
+  .step b,.step small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .step b{font-size:13px;font-weight:600}
+  .step small{font-size:11px;color:var(--muted)}
+  .step.done{background:var(--ok-bg)}
+  .step.cur{background:var(--magenta-soft);box-shadow:3px 3px 0 var(--magenta)}
+  .step.cur .n{background:var(--magenta);border-color:var(--magenta);color:var(--sheet)}
+
+  /* ------------------------------------------------------------ 工具栏 */
+  .tools{flex:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--sheet);border:2px solid var(--ink);
+         border-radius:4px;padding:7px 10px;box-shadow:3px 3px 0 var(--ink)}
+  .grow{flex:1;min-width:0}
+  label{font-size:12.5px;color:var(--muted)}
+  .ck{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+  button{font:inherit;font-size:13px;padding:5px 11px;border:2px solid var(--ink);border-radius:4px;background:var(--sheet);
+         color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 var(--ink);white-space:nowrap;transition:background-color 120ms ease}
+  button:hover{background:var(--sheet-2)}
+  button:active{transform:translate(1.5px,1.5px);box-shadow:none}
+  button.primary{background:var(--cyan-deep);color:var(--sheet)}
+  button.primary:hover{background:#0b6c80}
+  button.danger{background:var(--err-bg);color:var(--err)}
+  button.danger:hover{background:#f8ccd2}
+  button:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+  input,select{font:inherit;font-size:13px;padding:4px 9px;border:2px solid var(--ink);border-radius:4px;background:var(--sheet);
+               color:var(--ink);min-width:0}
+  input::placeholder{color:#9b8a6d}
+  input[type=checkbox]{width:15px;height:15px;padding:0;border:0;accent-color:var(--cyan-deep)}
+  input:focus,select:focus{border-color:var(--cyan-deep);outline:none}
+  input:focus-visible,select:focus-visible,button:focus-visible,.t:focus-visible{outline:3px solid var(--cyan-deep);outline-offset:1px}
+
+  /* ------------------------------------------------------------ 表格面板 */
+  .panel{flex:1;min-height:0;display:flex;flex-direction:column;background:var(--sheet);border:2px solid var(--ink);
+         border-radius:4px;box-shadow:4px 4px 0 var(--ink);overflow:hidden}
+  .panel-head{flex:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;
+              border-bottom:2px solid var(--ink);background:var(--sheet-2)}
+  .scroll{flex:1;min-height:0;overflow:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px}
+  th{position:sticky;top:0;z-index:2;text-align:left;font-size:12px;font-weight:600;color:var(--ink-2);padding:6px 9px;
+     background:var(--sheet-2);box-shadow:inset 0 -2px 0 var(--ink);white-space:nowrap}
+  td{padding:6px 9px;border-bottom:1px dashed rgba(35,28,18,.35);vertical-align:middle}
+  tr:nth-child(odd) td{background:var(--row-alt)}
+  tr.done td{background:var(--row-done)}
+  tr.error td{background:var(--row-err)}
+  tr:hover td{background:var(--row-hover)}
+  .col-ck{width:26px;padding-left:2px}
+  .col-k{width:104px}
+  .col-s{width:84px}
+  .col-p{width:224px}
+  .col-o{width:262px}
+  .num{font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted)}
+  .t{max-width:420px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-radius:3px;cursor:text}
+  .t:focus{white-space:normal;outline:3px solid var(--cyan-deep);outline-offset:1px}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 6px;border:1.5px solid var(--ink);border-radius:3px;
+       background:var(--magenta-soft);color:var(--magenta-ink)}
+  .tag.mp4{background:var(--cyan-soft);color:var(--cyan-ink)}
+  .tag.ts{background:var(--warn-bg);color:var(--warn)}
+  .q{display:block;font-size:10.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  .bar{height:8px;border:1.5px solid var(--ink);border-radius:3px;background:var(--sheet-2);overflow:hidden;min-width:100px}
+  .bar > i{display:block;height:100%;background:var(--cyan);transition:width 240ms linear}
+  .spin{flex:none;width:14px;height:14px;border-radius:99px;border:2px solid var(--sheet-2);border-top-color:var(--magenta);
+        animation:orbit 900ms linear infinite}
+  @keyframes orbit{to{transform:rotate(360deg)}}
+  .st-wrap{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .st{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .st.muted{color:var(--muted)}
+  .st.ok{color:var(--ok);font-weight:600}
+  .st.err{color:var(--err);font-weight:600}
+  .err-text{color:var(--err);font-size:12px;margin-top:2px;max-width:320px;overflow-wrap:anywhere}
+  .ops{display:flex;gap:4px;flex-wrap:wrap}
+  .ops button{padding:3px 8px;font-size:12px;box-shadow:1.5px 1.5px 0 var(--ink);flex:none}
+  .empty{padding:26px 12px;color:var(--muted);text-align:center;
+         background-image:radial-gradient(rgba(35,28,18,.13) 1px,transparent 1px);background-size:9px 9px}
+  .foot{flex:none;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;font-size:12px;color:var(--muted);
+        border-top:2px solid var(--ink);background:var(--sheet-2)}
+  .foot b{color:var(--ink);font-weight:600}
+  .foot code{background:var(--sheet);border:1.5px solid var(--ink);border-radius:3px;padding:0 5px;font-size:12px}
+  .dot{flex:none;width:7px;height:7px;border-radius:99px;background:var(--magenta)}
+
+  @media (max-width:1180px){ .host{display:none} }
+  @media (max-width:900px){
+    .col-s{display:none}
+    .poster{height:clamp(96px,16vh,140px)}
+  }
+  @media (max-width:760px){
+    .steps{display:grid;grid-template-columns:1fr 1fr}
+    /* 手机宽度：固定高度挤不下，改为整页滚动，表格给固定区间，宁可不滚不可裁切 */
+    body{height:auto;overflow:auto}
+    .wrap{height:auto}
+    .panel{flex:none}
+    .scroll{max-height:56vh}
+    .topbar{flex-wrap:wrap;gap:6px}
+    .pills{margin-left:0}
+    .stats{margin-left:0;flex-basis:100%}
+  }
+  @media (max-width:820px){
+    .wrap{padding:8px 10px 10px;gap:8px}
+    .brand small{display:none}
+    .col-p,.col-o{width:auto}
+    table{min-width:860px}
+    .ops{flex-wrap:nowrap}
+  }
+  @media (max-height:640px){ .poster{height:96px} }
+  @media (max-height:560px){
+    body{height:auto;overflow:auto}
+    .wrap{height:auto}
+    .panel{flex:none}
+    .scroll{max-height:60vh}
+  }
+  @media (prefers-reduced-motion:reduce){
+    button{transition:none}
+    .bar > i{transition:none}
+    .spin{animation:none;border-top-color:var(--magenta);border-right-color:var(--magenta)}
+  }
+</style>
+<style>
+/* ============================================================================
+   出场动效 · 共享 HUD 原语（自绘；零外部素材 / 零字体 / 零 CDN）
+   风格来源：design-pipeline/references/visual-style-signals.json 的
+   `industrial-tactical`（高对比操作层级、结构线、裁切几何、状态遥测）。
+   颜色一律复用页面既有变量（--ink/--cyan/--magenta/--paper/--sheet），不新增色板。
+   命名纪律：罩内类名一律以 `.gate`（或 `.wipe`）为前缀做限定——页面自己也有 `.bar`，
+   不限定就会撞类名（实测过：页面表格进度条被套上入场动画）。
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- 出场罩 */
+.gate{position:fixed;inset:0;z-index:99;background:var(--ink);color:var(--paper);
+      display:grid;place-items:center;overflow:hidden;font-variant-numeric:tabular-nums}
+
+/* 1.5px 发丝框 + 四个 L 形角括（裁切几何，非装饰花边） */
+.gate .frame{position:absolute;inset:14px;border:1.5px solid rgba(255,253,246,.30);pointer-events:none}
+.gate .corner{position:absolute;width:20px;height:20px;border:2px solid var(--cyan)}
+.gate .corner.tl{left:-1px;top:-1px;border-right:0;border-bottom:0}
+.gate .corner.tr{right:-1px;top:-1px;border-left:0;border-bottom:0}
+.gate .corner.bl{left:-1px;bottom:-1px;border-right:0;border-top:0}
+.gate .corner.br{right:-1px;bottom:-1px;border-left:0;border-top:0}
+
+.gate .idline{position:absolute;left:20px;top:16px;font-size:11px;color:rgba(255,253,246,.58)}
+.gate .idline b{color:var(--cyan);font-weight:600}
+.gate .skiphint{position:absolute;right:20px;bottom:16px;font-size:11px;color:rgba(255,253,246,.45)}
+
+/* ------------------------------------------------------------ 中央字标块 */
+.gate .stack{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
+             width:min(680px,52vw)}
+.gate .emblem{display:block;color:var(--cyan);transform-origin:50% 50%}
+.gate .word{font-size:17px;font-weight:600;line-height:1.3}
+.gate .sub{font-size:11px;color:rgba(255,253,246,.55)}
+
+/* 发丝进度线：宽度约视口一半（对齐实测 560→1365 / 1584 ≈ 51%）。
+   用 width/height 显式给尺寸，避开页面 `.bar` 的 1.5px 墨框 + box-sizing:border-box
+   （否则内容盒塌成 0，线整条消失——实测过）。 */
+.gate .bar{position:relative;width:100%;height:2px;min-width:0;border:0;border-radius:0;
+           background:rgba(255,253,246,.16);overflow:visible;margin-top:4px}
+.gate .bar i{position:absolute;left:0;top:0;width:100%;height:2px;background:var(--cyan);
+             transform-origin:left center;transform:scaleX(0)}
+
+/* 自检行：方块指示 + 中文状态（形状通道，无图标字体） */
+.gate .log{list-style:none;margin:4px 0 0;padding:0;width:100%;display:grid;gap:4px}
+.gate .log li{display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,253,246,.74);
+              white-space:nowrap}
+.gate .log .sq{flex:none;width:7px;height:7px;border:1.5px solid rgba(255,253,246,.45);
+               background:transparent}
+
+/* ------------------------------------------------------------ 内容带擦除 */
+/* 几何通道：clip-path 由右向左揭开 + 5px 上落；opacity 不参与承载 */
+@keyframes bandWipe{
+  from{clip-path:inset(0 100% 0 0);transform:translateY(-5px)}
+  to{clip-path:inset(0 0 0 0);transform:none}
+}
+
+/* ------------------------------------------------------------------ 降级 */
+/* 任意输入（键/指针/触摸/滚轮）或入场结束：直接终态，信息量不减 */
+html.wxc-skip .gate{display:none !important}
+html.wxc-skip .wipe{display:none !important}
+html.wxc-skip .frame,
+html.wxc-skip .corner,
+html.wxc-skip .emblem,
+html.wxc-skip .idline,
+html.wxc-skip .gate .bar i,
+html.wxc-skip .log li,
+html.wxc-skip .log .sq,
+html.wxc-skip .topbar,
+html.wxc-skip .poster,
+html.wxc-skip .steps,
+html.wxc-skip .step,
+html.wxc-skip .step::after,
+html.wxc-skip .tools,
+html.wxc-skip .panel,
+html.wxc-skip tbody tr,
+html.wxc-skip .step .n{
+  animation:none !important;transform:none !important;clip-path:none !important}
+
+@media (prefers-reduced-motion:reduce){
+  .gate,.wipe{display:none !important}
+  .frame,.corner,.emblem,.idline,.gate .bar i,.log li,.log .sq,
+  .topbar,.poster,.steps,.step,.step::after,.tools,.panel,tbody tr,.step .n,
+  .wipe-edge,.wipe-tag,.wipe-id{
+    animation:none !important;transform:none !important;clip-path:none !important}
+}
+
+/* ============================================================================
+   方案 1 · 自检开机（BOOT CHECK）
+   中央思想：出场 = 这台本机工具的一次开机自检；四条自检记录逐行打印，
+   每打印完一条，页面上对应那条内容带就用硬边擦除揭开；四条打完，墨色罩整块硬切消失。
+   时长 1360ms；任意输入任意时刻收敛到终态。
+   ========================================================================== */
+
+/* 角括自外向内落位（几何通道：位移 + 极小缩放；opacity 只作伴随） */
+html.c1 .corner.tl{animation:c1In 300ms cubic-bezier(.16,1,.3,1) 0ms both}
+html.c1 .corner.tr{animation:c1In 300ms cubic-bezier(.16,1,.3,1) 40ms both}
+html.c1 .corner.bl{animation:c1In 300ms cubic-bezier(.16,1,.3,1) 80ms both}
+html.c1 .corner.br{animation:c1In 300ms cubic-bezier(.16,1,.3,1) 120ms both}
+@keyframes c1In{from{transform:translate(-12px,-12px)}to{transform:none}}
+html.c1 .corner.tr,
+html.c1 .corner.br{animation-name:c1InR}
+@keyframes c1InR{from{transform:translate(12px,-12px)}to{transform:none}}
+html.c1 .corner.bl{animation-name:c1InB}
+@keyframes c1InB{from{transform:translate(-12px,12px)}to{transform:none}}
+html.c1 .corner.br{animation-name:c1InBR}
+@keyframes c1InBR{from{transform:translate(12px,12px)}to{transform:none}}
+
+html.c1 .frame{animation:c1Frame 300ms cubic-bezier(.16,1,.3,1) both}
+@keyframes c1Frame{from{transform:scale(.965)}to{transform:none}}
+html.c1 .emblem{animation:c1Mark 340ms cubic-bezier(.16,1,.3,1) 60ms both}
+@keyframes c1Mark{from{transform:scale(.88)}to{transform:none}}
+html.c1 .idline{animation:bandWipe 260ms cubic-bezier(.16,1,.3,1) 120ms both}
+
+/* 发丝线：实测官方加载线走 S 形（先加速后收），不是匀速。
+   必须限定在 .gate 内：页面表格里也有 .bar > i（进度条），否则会撞类名 */
+html.c1 .gate .bar i{animation:c1Bar 900ms cubic-bezier(.55,0,.45,1) 300ms both}
+@keyframes c1Bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* 四条自检记录：逐行擦出；方块指示在该行末位瞬间点亮（step-end 硬切） */
+html.c1 .log li{animation:bandWipe 220ms cubic-bezier(.16,1,.3,1) var(--d) both}
+html.c1 .log .sq{animation:c1Sq 1ms calc(var(--d) + 170ms) step-end both}
+@keyframes c1Sq{from{background:transparent;border-color:rgba(255,253,246,.45)}
+                to{background:var(--cyan);border-color:var(--cyan)}}
+
+/* 四条内容带：与自检行的语义一一对应（证书→顶栏+海报条 / 代理→号码牌 / 抓包→工具栏 / 下载→表格） */
+html.c1 .topbar{animation:bandWipe 300ms cubic-bezier(.16,1,.3,1) 560ms both}
+html.c1 .poster{animation:bandWipe 300ms cubic-bezier(.16,1,.3,1) 660ms both}
+html.c1 .steps {animation:bandWipe 300ms cubic-bezier(.16,1,.3,1) 780ms both}
+html.c1 .tools {animation:bandWipe 300ms cubic-bezier(.16,1,.3,1) 900ms both}
+html.c1 .tools + .tools{animation-delay:980ms}
+html.c1 .panel {animation:bandWipe 300ms cubic-bezier(.16,1,.3,1) 1060ms both}
+
+/* 罩子整块硬切消失：单帧 step-start（值在整个活动区间内即取 to，不受浮点进度影响），无淡出 */
+html.c1 .gate{animation:c1Cut 1ms 1360ms step-start both}
+@keyframes c1Cut{from{visibility:visible}to{visibility:hidden}}
+
+/* 预览专用：把 /art/background 指向本机素材（产品里由 FastAPI 只读路由提供） */
+.poster{background-image:url("/%E8%83%8C%E6%99%AF.jpg")}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="gate" aria-hidden="true">
+  <div class="frame">
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+  </div>
+  <div class="idline">WXC · 本机抓包下载器 <b>127.0.0.1:8900</b></div>
+  <div class="skiphint">按任意键跳过</div>
+  <div class="stack">
+    <svg class="emblem" width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
+      <path d="M4 4h44l20 32-20 32H4z" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <path d="M18 30h20M18 42h14" stroke="currentColor" stroke-width="2.5"/>
+      <path d="M46 42l8-12" stroke="currentColor" stroke-width="2.5"/>
+    </svg>
+    <div class="word">网课下载器</div>
+    <div class="sub">本机抓包 · 视频只存本机</div>
+    <div class="bar"><i></i></div>
+    <ul class="log">
+      <li style="--d:340ms"><span class="sq"></span>CA 证书 · 已信任（当前用户根存储）</li>
+      <li style="--d:480ms"><span class="sq"></span>系统代理 · 127.0.0.1:8899</li>
+      <li style="--d:620ms"><span class="sq"></span>抓包 · 监听中 · 已入库 8 条</li>
+      <li style="--d:760ms"><span class="sq"></span>下载引擎 · ffmpeg 就绪 · 完成 4 条</li>
+    </ul>
+  </div>
+</div>
+
+
+  <header class="topbar">
+    <div class="brand"><b>wxc<em>·</em>网课下载器</b><small>本机抓包 · 127.0.0.1:8900</small></div>
+    <div class="pills">
+      <span id="p-capture" class="pill">抓包：检测中</span>
+      <span id="p-proxy" class="pill">系统代理：?</span>
+      <span id="p-cert" class="pill">CA 证书：?</span>
+      <span id="p-ffmpeg" class="pill">ffmpeg：?</span>
+    </div>
+    <div class="stats" id="stats">正在读取状态…</div>
+  </header>
+
+  <div class="poster"><span class="cap">本机抓包 · 视频直接存成 mp4，只留在本机</span></div>
+
+  <ol class="steps">
+    <li class="step" data-step="1"><span class="n">1</span><div><b>安装 CA 证书</b><small>检测中…</small></div></li>
+    <li class="step" data-step="2"><span class="n">2</span><div><b>开启系统代理</b><small>检测中…</small></div></li>
+    <li class="step" data-step="3"><span class="n">3</span><div><b>微信里播放网课</b><small>检测中…</small></div></li>
+    <li class="step" data-step="4"><span class="n">4</span><div><b>下载到本地</b><small>检测中…</small></div></li>
+  </ol>
+
+  <div class="tools">
+    <button id="btn-proxy-on" class="primary">开启系统代理</button>
+    <button id="btn-proxy-off">关闭系统代理</button>
+    <button id="btn-cert">安装 CA 证书</button>
+    <button id="btn-capture">抓包端口检测</button>
+    <span class="grow"></span>
+    <label for="out-dir">下载目录</label>
+    <input id="out-dir" class="grow" style="max-width:300px">
+    <label for="conc">并发</label>
+    <input id="conc" type="number" min="1" max="8" style="width:58px;text-align:right">
+    <button id="btn-save">保存设置</button>
+    <button id="btn-open">打开目录</button>
+  </div>
+
+  <div class="tools">
+    <input id="manual-url" class="grow" placeholder="手动导入：媒体直链（m3u8/mp4…）或返回视频地址的接口 URL">
+    <input id="manual-title" style="width:180px" placeholder="标题（可留空）">
+    <button id="btn-manual">导入</button>
+    <input id="search" style="width:180px" placeholder="搜索标题 / 地址" aria-label="搜索标题或地址">
+  </div>
+
+  <section class="panel">
+    <div class="panel-head">
+      <label class="ck"><input type="checkbox" id="check-all"> 全选</label>
+      <button id="btn-dl-sel" class="primary">下载选中</button>
+      <button id="btn-dl-all">下载全部未完成</button>
+      <button id="btn-cancel-all">取消全部</button>
+      <button id="btn-clean" class="danger">清理 TS 分片条目</button>
+      <span class="grow"></span>
+      <label class="ck"><input type="checkbox" id="show-ignored"> 显示已忽略</label>
+      <button id="btn-refresh">刷新状态</button>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th class="col-ck"></th><th class="col-k">类型</th><th>标题</th><th class="host">主机</th>
+          <th class="col-s">大小</th><th class="col-p">进度 / 状态</th><th class="col-o">操作</th>
+        </tr></thead>
+        <tbody id="rows"><tr><td colspan="7" class="empty">先在微信里播放网课，或手动导入地址。</td></tr></tbody>
+      </table>
+    </div>
+    <div class="foot">
+      <span class="dot"></span>下载目录 <code id="foot-dir">—</code> · 并发 <b id="foot-conc">2</b> ·
+      代理开着会一直抓包，<b>下完记得点「关闭系统代理」</b>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* 概念预览夹具（只用于关键帧渲染，不进产品）
+   目的：把 /api/* 换成固定数据，让关键帧显示真实渲染的真实页面（同一份 static/index.html），
+   而不是画一张 mood board。产品代码一行不改。 */
+(function () {
+  const STATUS = {
+    capture_running: true,
+    proxy: { enabled: true, server: '127.0.0.1:8899' },
+    cert: { installed: true, exists: true },
+    ffmpeg_ok: true,
+    counts: { total: 8, done: 4, error: 1 },
+    active_downloads: 1,
+    settings: { out_dir: 'D:\\wxc-downloads', concurrency: 2 }
+  };
+  const mk = (id, kind, title, state, extra) => Object.assign({
+    id, kind, title, url: 'https://vod.example.edu/' + id + '/' + (kind === 'hls' ? 'index.m3u8' : 'v.mp4'),
+    host: kind === 'hls' ? 'vod-cdn-a.example.edu' : 'vod.example.edu',
+    size: 0, state, progress: null, duration: 0, out_time: 0, bytes: 0, total: 0,
+    quality: '', file_exists: false, file_name: title + '.mp4', ignored: false, error: '', related_id: null
+  }, extra || {});
+  const ITEMS = [
+    mk(1, 'hls', '第 03 讲 · 有限元法基础（上）', 'running',
+       { progress: 0.42, duration: 4532, out_time: 1904, bytes: 322122547, total: 766958446, quality: '1280x720' }),
+    mk(2, 'hls', '第 03 讲 · 有限元法基础（下）', 'running',
+       { progress: 0.08, duration: 4210, out_time: 337, bytes: 58720256, total: 734003200, quality: '1280x720' }),
+    mk(3, 'mp4', '第 02 讲 · 变分原理与弱形式', 'done',
+       { size: 612368384, duration: 3908, file_exists: true, quality: '1280x720' }),
+    mk(4, 'mp4', '第 01 讲 · 课程导论', 'done',
+       { size: 480247808, duration: 3312, file_exists: true, quality: '1280x720' }),
+    mk(5, 'hls', '第 04 讲 · 单元刚度矩阵', 'error',
+       { progress: 0.31, duration: 4021, out_time: 1246, bytes: 209715200, total: 671088640, quality: '1280x720',
+         error: '链接带时效签名已失效：回微信重新播放该课时，刷新后重下。' }),
+    mk(6, 'ts', '第 03 讲 · 有限元法基础（上）', 'idle', { quality: '1280x720', related_id: 1, size: 1048576 }),
+    mk(7, 'hls', '第 05 讲 · 装配与边界条件', 'queued', { quality: '960x540', size: 0 }),
+    mk(8, 'dash', '第 06 讲 · 后处理与误差估计', 'idle', { quality: '1280x720' })
+  ];
+  const json = (o) => Promise.resolve(new Response(JSON.stringify(o), {
+    status: 200, headers: { 'Content-Type': 'application/json' }
+  }));
+  window.fetch = function (url) {
+    const u = String(url && url.url ? url.url : url);
+    if (u.indexOf('/api/status') >= 0) return json(STATUS);
+    if (u.indexOf('/api/items') >= 0) return json({ items: ITEMS });
+    return json({ ok: true });
+  };
+})();
+
+</script>
+<script>
+const $ = s => document.querySelector(s);
+let items = [], timer = null, busy = false;
+
+async function api(path, opts) {
+  const r = await fetch(path, Object.assign({headers: {'Content-Type': 'application/json'}}, opts));
+  const t = await r.text();
+  let j = null; try { j = t ? JSON.parse(t) : null; } catch (e) { j = {detail: t}; }
+  if (!r.ok) throw new Error((j && (j.detail || j.message)) || r.statusText);
+  return j;
+}
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtB = n => (!n || n < 0) ? '—' : n < 1024*1024 ? (n/1024).toFixed(0)+' KB' : (n/1048576).toFixed(1)+' MB';
+const fmtT = s => { s = Math.round(s||0); const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60;
+  return (h?h+':':'') + String(m).padStart(2,'0') + ':' + String(x).padStart(2,'0'); };
+const KIND = {hls:'HLS', mp4:'MP4', ts:'TS 片', audio:'音频', dash:'DASH', flv:'FLV', mkv:'MKV', webm:'WEBM', f4m:'F4M'};
+const STATE = {idle:['未下载',''], queued:['排队中',''], running:['下载中',''], done:['完成','ok'],
+               error:['失败','err'], canceled:['已取消','']};
+
+/* 四步号码牌：直接吃 /api/status，逐张点亮，当前步给出下一步动作 */
+const STEP_HINT = (i, ok, st) => {
+  if (i === 0) return ok ? '已信任 · 根存储' : (st.cert.exists ? '已生成 · 待安装' : '未生成');
+  if (i === 1) return ok ? st.proxy.server : '关闭';
+  if (i === 2) return ok ? `已捕获 ${st.counts.total || 0} 条` : '在微信 PC 端播放几秒';
+  return ok ? `已完成 ${st.counts.done || 0} 条` : '勾选条目 → 下载选中';
+};
+function paintSteps(st) {
+  const reached = [!!st.cert.installed, !!st.proxy.enabled, (st.counts.total || 0) > 0, (st.counts.done || 0) > 0];
+  const cur = reached.indexOf(false);
+  reached.forEach((ok, i) => {
+    const el = document.querySelector(`[data-step="${i + 1}"]`);
+    if (!el) return;
+    el.className = 'step' + (ok ? ' done' : i === cur ? ' cur' : '');
+    const small = el.querySelector('small');
+    if (small) small.textContent = STEP_HINT(i, ok, st);
+    if (!ok && i === cur) el.setAttribute('aria-current', 'step'); else el.removeAttribute('aria-current');
+  });
+}
+
+function statusCell(it) {
+  const [txt, cls] = STATE[it.state] || [it.state, ''];
+  let bar = '', extra = '';
+  if (it.state === 'running' || it.state === 'queued') {
+    if (it.progress != null) {
+      bar = `<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(it.progress*100)}"><i style="width:${(it.progress*100).toFixed(1)}%"></i></div>`;
+      extra = `${Math.round(it.progress*100)}%` + (it.duration ? ` · ${fmtT(it.out_time)} / ${fmtT(it.duration)}`
+        : (it.total > 0 ? ` · ${fmtB(it.bytes)} / ${fmtB(it.total)}` : ''));
+    } else if (it.state === 'running') {
+      bar = '<div class="spin" aria-hidden="true"></div>';
+      extra = it.total > 0 ? `${fmtB(it.bytes)} / ${fmtB(it.total)}` : fmtB(it.bytes);
+    }
+  } else if (it.state === 'done') {
+    extra = it.duration ? fmtT(it.duration) : fmtB(it.bytes);
+  }
+  return `<div class="st-wrap">${bar}<div class="st ${cls}">${esc(txt)}${extra ? ' · ' + esc(extra) : ''}</div></div>`;
+}
+
+function opsCell(it) {
+  const o = [];
+  if (it.state === 'running' || it.state === 'queued') o.push(`<button data-act="cancel" data-id="${it.id}">取消</button>`);
+  else if (it.kind === 'ts' && it.related_id) o.push(`<button data-act="download" data-id="${it.related_id}" class="primary">下载整节课</button>`);
+  else o.push(`<button data-act="download" data-id="${it.id}" class="primary">${it.state==='done'?'重下':'下载'}</button>`);
+  if (it.file_exists) o.push(`<button data-act="play" data-id="${it.id}" data-name="${esc(it.file_name)}">播放</button>`);
+  if (it.state === 'done' || it.state === 'error') o.push(`<button data-act="reveal" data-id="${it.id}">定位</button>`);
+  o.push(`<button data-act="ignore" data-id="${it.id}">${it.ignored?'取消忽略':'忽略'}</button>`);
+  o.push(`<button data-act="del" data-id="${it.id}" class="danger">删除</button>`);
+  return `<div class="ops">${o.join('')}</div>`;
+}
+
+function render() {
+  const q = $('#search').value.trim().toLowerCase();
+  const showIgnored = $('#show-ignored').checked;
+  const list = items.filter(it => (showIgnored || !it.ignored) &&
+    (!q || (it.title + ' ' + it.url).toLowerCase().includes(q)));
+  if (!list.length) {
+    $('#rows').innerHTML = `<tr><td colspan="7" class="empty">暂无记录。先在微信里播放网课，或手动导入地址。</td></tr>`;
+    return;
+  }
+  $('#rows').innerHTML = list.map(it => {
+    const t = it.title || '(未命名)';
+    return `
+    <tr class="${it.state==='done'?'done':it.state==='error'?'error':''}">
+      <td class="col-ck"><input type="checkbox" class="pick" data-id="${it.id}" aria-label="选择：${esc(t)}"></td>
+      <td class="col-k"><span class="tag ${esc(it.kind)}">${esc(KIND[it.kind]||it.kind)}</span>${it.quality ? `<span class="q">${esc(it.quality)}</span>` : ''}</td>
+      <td><div class="t" data-title="${esc(t)}" contenteditable="true" spellcheck="false" title="${esc(t)} — ${esc(it.url)}">${esc(t)}</div>
+          ${it.kind === 'ts' && it.related_id ? '<div class="q" style="color:var(--warn)">视频分片，请点「下载整节课」</div>' : ''}
+          ${it.error ? `<div class="err-text">${esc(it.error)}</div>` : ''}</td>
+      <td class="host muted">${esc(it.host)}</td>
+      <td class="col-s num muted">${fmtB(it.size)}</td>
+      <td class="col-p">${statusCell(it)}</td>
+      <td class="col-o">${opsCell(it)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function refresh() {
+  if (busy) return;
+  busy = true;
+  try {
+    const [st, its] = await Promise.all([api('/api/status'), api('/api/items')]);
+    items = its.items;
+    render();
+    $('#stats').innerHTML = `共 <b>${st.counts.total||0}</b> 条 · 完成 <b>${st.counts.done||0}</b> · 失败 <b>${st.counts.error||0}</b> · 下载中 <b>${st.active_downloads}</b>`;
+    const set = (id, ok, txt) => { const e = $(id); e.textContent = txt; e.className = 'pill ' + (ok ? 'ok' : 'bad'); };
+    set('#p-capture', st.capture_running, '抓包：' + (st.capture_running ? '运行中' : '未运行'));
+    set('#p-proxy', st.proxy.enabled, '系统代理：' + (st.proxy.enabled ? st.proxy.server : '关闭'));
+    set('#p-cert', st.cert.installed, 'CA 证书：' + (st.cert.installed ? '已信任' : (st.cert.exists ? '未安装' : '未生成')));
+    set('#p-ffmpeg', st.ffmpeg_ok, 'ffmpeg：' + (st.ffmpeg_ok ? '就绪' : '缺失'));
+    paintSteps(st);
+    $('#foot-dir').textContent = st.settings.out_dir;
+    $('#foot-conc').textContent = st.settings.concurrency;
+    if (document.activeElement !== $('#out-dir')) $('#out-dir').value = st.settings.out_dir;
+    if (document.activeElement !== $('#conc')) $('#conc').value = st.settings.concurrency;
+  } catch (e) {
+    $('#stats').textContent = '接口异常：' + e.message;
+  } finally { busy = false; }
+}
+
+async function act(fn) { try { await fn(); } catch (e) { alert(e.message); } await refresh(); }
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('button[data-act]');
+  if (!b) return;
+  const id = +b.dataset.id, act_ = b.dataset.act;
+  if (act_ === 'download') act(() => api('/api/download', {method:'POST', body: JSON.stringify({ids:[id]})}));
+  else if (act_ === 'cancel') act(() => api(`/api/items/${id}/cancel`, {method:'POST'}));
+  else if (act_ === 'ignore') {
+    const it = items.find(x => x.id === id);
+    act(() => api(`/api/items/${id}`, {method:'PATCH', body: JSON.stringify({ignored: !it.ignored})}));
+  }
+  else if (act_ === 'del') act(() => api(`/api/items/${id}`, {method:'DELETE'}));
+  else if (act_ === 'reveal') act(() => api(`/api/reveal?item_id=${id}`));
+  else if (act_ === 'play') window.open('/files/' + encodeURIComponent(b.dataset.name), '_blank');
+});
+
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (!t.classList || !t.classList.contains('t')) return;
+  if (e.key === 'Enter') { e.preventDefault(); t.blur(); }
+  else if (e.key === 'Escape') { t.textContent = t.dataset.title || ''; t.blur(); }
+});
+document.addEventListener('blur', e => {
+  if (!e.target.classList || !e.target.classList.contains('t')) return;
+  const tr = e.target.closest('tr'), id = +tr.querySelector('.pick').dataset.id;
+  const val = e.target.textContent.trim();
+  const it = items.find(x => x.id === id);
+  if (it && val !== it.title) act(() => api(`/api/items/${id}`, {method:'PATCH', body: JSON.stringify({title: val})}));
+}, true);
+
+$('#btn-proxy-on').onclick = () => act(() => api('/api/proxy', {method:'POST', body: JSON.stringify({enable:true})}));
+$('#btn-proxy-off').onclick = () => act(() => api('/api/proxy', {method:'POST', body: JSON.stringify({enable:false})}));
+$('#btn-cert').onclick = () => act(async () => { const r = await api('/api/cert/install', {method:'POST'}); alert(r.message); });
+$('#btn-capture').onclick = () => refresh();
+$('#btn-save').onclick = () => act(() => api('/api/settings', {method:'POST', body: JSON.stringify({
+  out_dir: $('#out-dir').value.trim(), concurrency: +$('#conc').value })}));
+$('#btn-open').onclick = () => act(() => api('/api/reveal'));
+$('#btn-refresh').onclick = () => refresh();
+$('#search').oninput = render;
+$('#show-ignored').onchange = render;
+$('#check-all').onchange = e => document.querySelectorAll('.pick').forEach(c => c.checked = e.target.checked);
+$('#btn-dl-sel').onclick = () => {
+  const ids = [...document.querySelectorAll('.pick:checked')].map(c => +c.dataset.id);
+  if (!ids.length) return alert('先勾选条目');
+  act(() => api('/api/download', {method:'POST', body: JSON.stringify({ids})}));
+};
+$('#btn-dl-all').onclick = () => act(() => api('/api/download', {method:'POST', body: JSON.stringify({})}));
+$('#btn-cancel-all').onclick = () => act(() => api('/api/cancel_all', {method:'POST'}));
+$('#btn-clean').onclick = () => {
+  if (!confirm('把列表里所有「TS 片」条目删掉？它们只是视频分片，真正要下的是 HLS 条目。')) return;
+  act(async () => {
+    const r = await api('/api/cleanup/segments?mode=delete', {method:'POST'});
+    alert(`已清理 ${r.affected} 条分片条目`);
+  });
+};
+$('#btn-manual').onclick = () => act(async () => {
+  const url = $('#manual-url').value.trim();
+  if (!url) throw new Error('请填写地址');
+  await api('/api/manual', {method:'POST', body: JSON.stringify({url, title: $('#manual-title').value.trim()})});
+  $('#manual-url').value = ''; $('#manual-title').value = '';
+});
+
+refresh();
+timer = setInterval(refresh, 1500);
+</script>
+
+<script>
+/* 入场收尾 + 关键帧钩子。
+   任意输入立即收敛到终态；否则到入场时长后也摘掉 `entering`——
+   摘掉的原因见 c3.css 顶部：页面每 1500ms 重写 #rows，挂在 tbody tr 上的入场动画会被轮询反复重启。 */
+(function () {
+  var html = document.documentElement;
+  var t = new URLSearchParams(location.search).get('t');
+  var done = false;
+  function settle(user) {
+    if (done) return;
+    done = true;
+    html.classList.remove('entering');
+    /* 只有用户打断时才用 wxc-skip 把整页直接压到终态；
+       自然播完时各动画自己的 fill 已到终态，不额外冻结页面上其它 CSS。 */
+    if (user) html.classList.add('wxc-skip');
+  }
+  if (t == null) {
+    ['keydown', 'pointerdown', 'touchstart', 'wheel'].forEach(function (k) {
+      addEventListener(k, function () { settle(true); }, { passive: true });
+    });
+    setTimeout(function () { settle(false); }, 1360);
+  } else {
+    setTimeout(function () {
+      document.getAnimations().forEach(function (a) { a.pause(); a.currentTime = Number(t); });
+      html.setAttribute('data-frozen', t);
+    }, 120);
+  }
+})();
+</script>
+</body>
+
+</html>

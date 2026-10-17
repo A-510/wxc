@@ -1,0 +1,31 @@
+{
+  "schema": "design-pipeline.direction-preview-fixture.v1",
+  "note": "三个候选方向共用同一份真实内容与状态，取自 wxc 的真实条目字段（kind/quality/title/host/size/state/error）与 /api/status 字段。",
+  "status": {
+    "capture_running": true,
+    "proxy": { "enabled": true, "server": "127.0.0.1:8899" },
+    "cert": { "installed": true, "exists": true },
+    "ffmpeg_ok": true,
+    "counts": { "total": 12, "done": 7, "error": 1 },
+    "active_downloads": 2
+  },
+  "steps": [
+    { "id": "cert", "label": "安装 CA 证书", "state": "done" },
+    { "id": "proxy", "label": "开启系统代理", "state": "done" },
+    { "id": "capture", "label": "微信里播放网课", "state": "current" },
+    { "id": "download", "label": "下载到本地", "state": "todo" }
+  ],
+  "items": [
+    { "kind": "hls", "quality": "1280x720", "title": "高等数学（上）· 第3章 第2节 导数的定义", "host": "vod.school.edu.cn", "size": "128.4 MB", "state": "done", "meta": "12:36" },
+    { "kind": "mp4", "quality": "960x540", "title": "大学英语视听说 · Unit 4 Campus Life", "host": "media2.school.edu.cn", "size": "84.1 MB", "state": "running", "meta": "62% · 02:14 / 12:05" },
+    { "kind": "ts", "quality": "", "title": "马克思主义基本原理 · 第5章", "host": "vod.school.edu.cn", "size": "3.2 MB", "state": "segment", "meta": "视频分片，请点「下载整节课」" },
+    { "kind": "hls", "quality": "640x360", "title": "线性代数 · 第1章 行列式", "host": "vod.school.edu.cn", "size": "62.8 MB", "state": "idle", "meta": "" },
+    { "kind": "hls", "quality": "1280x720", "title": "计算机网络 · 第2章 物理层", "host": "vod.school.edu.cn", "size": "210.7 MB", "state": "error", "meta": "链接带时效签名已失效：回微信重新播放该课时，刷新后重下。" },
+    { "kind": "mp4", "quality": "1280x720", "title": "概率论与数理统计 · 第4章 大数定律", "host": "media.school.edu.cn", "size": "96.5 MB", "state": "queued", "meta": "" }
+  ],
+  "statesCovered": [
+    "idle", "queued", "running", "done", "error", "segment",
+    "cert-installed", "proxy-on", "capture-running", "ffmpeg-ready",
+    "long-title", "unknown-size-placeholder", "inline-error-action"
+  ]
+}

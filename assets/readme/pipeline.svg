@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="470" viewBox="0 0 1200 470" role="img" aria-labelledby="pipeTitle pipeDesc">
+  <title id="pipeTitle">wxc 的两层结构：抓包层与下载层</title>
+  <desc id="pipeDesc">左边一列是抓包层：微信 PC 端播放网课时，mitmproxy 在本机 127.0.0.1:8899 上拦截，识别 m3u8 / mp4 / ts 以及接口 JSON 里内嵌的地址，把媒体条目、请求头与进度写进本地抓包库。中间有一条箭头表示把库里的任务交给下载层。右边一列是下载层：界面里点下载，HLS/DASH 交给 ffmpeg 合并，直链走 httpx 直连并支持断点续传，最后合并成带课程标题与清晰度的 mp4 落盘。全部留在本机，不上传。</desc>
+
+  <defs>
+    <pattern id="halftone2" width="9" height="9" patternUnits="userSpaceOnUse">
+      <circle cx="2.5" cy="2.5" r="1.1" fill="#231c12" fill-opacity="0.13"/>
+    </pattern>
+  </defs>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif">
+    <rect width="1200" height="470" rx="6" fill="#fbf3e4"/>
+    <rect width="1200" height="470" rx="6" fill="url(#halftone2)"/>
+    <rect x="1" y="1" width="1198" height="468" rx="6" fill="none" stroke="#231c12" stroke-width="2"/>
+
+    <g id="lane-capture">
+      <g id="lane-capture-head">
+        <rect x="59" y="57" width="524" height="30" rx="3" fill="#231c12"/>
+        <rect x="56" y="54" width="524" height="30" rx="3" fill="#ffe9f1" stroke="#231c12" stroke-width="2"/>
+        <text x="76" y="75" font-size="20" font-weight="600" fill="#231c12">抓包层 · mitmdump 插件</text>
+      </g>
+
+      <g id="capture-1" transform="translate(56 100)">
+        <rect x="3" y="3" width="524" height="96" rx="3" fill="#231c12"/>
+        <rect width="524" height="96" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <rect width="6" height="96" rx="3" fill="#c62d6d"/>
+        <text x="30" y="40" font-size="24" font-weight="600" fill="#231c12">微信 PC 端播放网课</text>
+        <text x="30" y="72" font-size="20" fill="#6b5c45">播放那一刻才向服务端要带签名的地址</text>
+      </g>
+
+      <g id="capture-2" transform="translate(56 210)">
+        <rect x="3" y="3" width="524" height="96" rx="3" fill="#231c12"/>
+        <rect width="524" height="96" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <rect width="6" height="96" rx="3" fill="#c62d6d"/>
+        <text x="30" y="40" font-size="24" font-weight="600" fill="#231c12">mitmproxy 拦截 127.0.0.1:8899</text>
+        <text x="30" y="72" font-size="20" fill="#6b5c45">认 m3u8 / mp4 / ts，也挖 JSON 里的地址</text>
+      </g>
+
+      <g id="capture-3" transform="translate(56 320)">
+        <rect x="3" y="3" width="524" height="96" rx="3" fill="#231c12"/>
+        <rect width="524" height="96" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <rect width="6" height="96" rx="3" fill="#c62d6d"/>
+        <text x="30" y="40" font-size="24" font-weight="600" fill="#231c12">写进本地抓包库</text>
+        <text x="30" y="72" font-size="20" fill="#6b5c45">媒体条目、抓包请求头、下载进度</text>
+      </g>
+    </g>
+
+    <g id="handoff">
+      <path d="M582 368 H600 V148 H610" fill="none" stroke="#0d7f96" stroke-width="2.5"/>
+      <path d="M610 142 L620 148 L610 154 Z" fill="#0d7f96"/>
+    </g>
+
+    <g id="lane-download">
+      <g id="lane-download-head">
+        <rect x="623" y="57" width="524" height="30" rx="3" fill="#231c12"/>
+        <rect x="620" y="54" width="524" height="30" rx="3" fill="#d7ecf4" stroke="#231c12" stroke-width="2"/>
+        <text x="640" y="75" font-size="20" font-weight="600" fill="#231c12">下载层 · ffmpeg / httpx</text>
+      </g>
+
+      <g id="download-1" transform="translate(620 100)">
+        <rect x="3" y="3" width="524" height="96" rx="3" fill="#231c12"/>
+        <rect width="524" height="96" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <rect width="6" height="96" rx="3" fill="#0d7f96"/>
+        <text x="30" y="40" font-size="24" font-weight="600" fill="#231c12">界面里点下载</text>
+        <text x="30" y="72" font-size="20" fill="#6b5c45">单条、勾选批量、全部未完成</text>
+      </g>
+
+      <g id="download-2" transform="translate(620 210)">
+        <rect x="3" y="3" width="524" height="96" rx="3" fill="#231c12"/>
+        <rect width="524" height="96" rx="3" fill="#fffdf6" stroke="#231c12" stroke-width="2"/>
+        <rect width="6" height="96" rx="3" fill="#0d7f96"/>
+        <text x="30" y="40" font-size="24" font-weight="600" fill="#231c12">ffmpeg 合并 HLS/DASH</text>
+        <text x="30" y="72" font-size="20" fill="#6b5c45">httpx 直连，不吃代理，支持 Range 续传</text>
+      </g>
+
+      <g id="download-3" transform="translate(620 320)">
+        <rect x="3" y="3" width="524" height="96" rx="3" fill="#231c12"/>
+        <rect width="524" height="96" rx="3" fill="#d7ecf4" stroke="#231c12" stroke-width="2"/>
+        <rect width="6" height="96" rx="3" fill="#0d7f96"/>
+        <text x="30" y="40" font-size="24" font-weight="600" fill="#231c12">合并成 mp4 落盘</text>
+        <text x="30" y="72" font-size="20" fill="#0b5f78">文件名带课程标题与清晰度</text>
+      </g>
+    </g>
+
+    <text x="56" y="444" font-size="20" fill="#6b5c45">全部留在本机：抓包库、证书与下载文件都不上传，也不经过任何服务器。</text>
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+/* ============================================================================
+   方案 2 · 信号色块擦除（SIGNAL WIPE）
+   中央思想：出场 = 一块洋红印版从整页上被"拉走"。页面从第 0 帧就已是终态排版，
+   没有任何逐元素入场；印版左缘是一条 30° 硬斜边（裁切几何），它扫过即揭页。
+   实测参照：Endfield 官网同族色块扫过 1584px 用时 ≈0.95s，前缘先加速后收。
+   时长 1150ms（扫 950ms + 四张阶段牌盖章 200ms）。
+   ========================================================================== */
+
+html.c2 .wipe{position:fixed;inset:0;z-index:99;overflow:hidden;background:var(--magenta);
+  color:var(--sheet);
+  /* 左缘（揭页边）30° 斜切；右缘留在视口外 */
+  clip-path:polygon(46px 0,100% 0,100% 100%,0 100%);
+  animation:c2Sweep 950ms cubic-bezier(.62,.02,.16,1) both,
+            c2Off 1ms 950ms step-start forwards;
+  will-change:transform}
+@keyframes c2Sweep{from{transform:translateX(0)}to{transform:translateX(100%)}}
+/* 扫完后连层一起撤掉（避免留一个合成层），段内即取 to */
+@keyframes c2Off{from{visibility:hidden}to{visibility:hidden}}
+
+/* 随版移动的 1px 墨线（印刷规矩线），与斜切边平行 */
+html.c2 .wipe-edge{position:absolute;left:0;top:-6%;bottom:-6%;width:2px;background:var(--ink);
+  transform:rotate(2.9deg);transform-origin:0 50%}
+/* 自绘角标块：4 道 30° 发丝线 + ID（纯几何，无图形素材） */
+html.c2 .wipe-tag{position:absolute;left:74px;bottom:46px;display:flex;align-items:flex-end;gap:14px;
+  color:var(--ink);font-size:12px}
+html.c2 .wipe-tag b{font-size:15px;font-weight:600}
+html.c2 .wipe-tag .hash{display:block;width:120px;height:34px;
+  background-image:repeating-linear-gradient(60deg,var(--ink) 0 2px,transparent 2px 9px)}
+html.c2 .wipe-id{position:absolute;left:74px;top:46px;font-size:11px;color:rgba(255,253,246,.8)}
+html.c2 .wipe-id b{color:var(--ink);font-weight:600}
+
+/* 印版退场后，四张阶段牌依次"盖章"：徽号 220ms 实心化再交还给状态色 */
+html.c2 .step .n{animation:c2Stamp 220ms linear calc(900ms + var(--i) * 70ms) both,
+                           c2StampOff 1ms step-end calc(1120ms + var(--i) * 70ms) forwards}
+html.c2 .step:nth-child(1){--i:0}
+html.c2 .step:nth-child(2){--i:1}
+html.c2 .step:nth-child(3){--i:2}
+html.c2 .step:nth-child(4){--i:3}
+@keyframes c2Stamp{
+  from{background:var(--magenta);border-color:var(--magenta);color:var(--sheet);
+       transform:scale(1.14)}
+  to{background:var(--magenta);border-color:var(--magenta);color:var(--sheet);transform:scale(1)}}
+@keyframes c2StampOff{
+  from{background:transparent;border-color:var(--ink);color:var(--ink)}
+  to{background:transparent;border-color:var(--ink);color:var(--ink)}}

@@ -1,0 +1,74 @@
+{
+ "c1_end": {
+  "t": 1859,
+  "htmlClass": "c1",
+  "clipped": 0,
+  "gate": "hidden/grid",
+  "wipe": "absent",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c1_skip": {
+  "t": 1160,
+  "htmlClass": "c1 wxc-skip",
+  "clipped": 0,
+  "gate": "visible/none",
+  "wipe": "absent",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c1_late": {
+  "t": 4237,
+  "htmlClass": "c1",
+  "clipped": 0,
+  "gate": "hidden/grid",
+  "wipe": "absent",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c2_end": {
+  "t": 1533,
+  "htmlClass": "c2",
+  "clipped": 0,
+  "gate": "absent",
+  "wipe": "hidden/block",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c2_skip": {
+  "t": 1156,
+  "htmlClass": "c2 wxc-skip",
+  "clipped": 0,
+  "gate": "absent",
+  "wipe": "visible/none",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c3_end": {
+  "t": 1147,
+  "htmlClass": "c3",
+  "clipped": 0,
+  "gate": "absent",
+  "wipe": "absent",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c3_skip": {
+  "t": 1173,
+  "htmlClass": "c3 wxc-skip",
+  "clipped": 0,
+  "gate": "absent",
+  "wipe": "absent",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ },
+ "c3_late": {
+  "t": 4238,
+  "htmlClass": "c3",
+  "clipped": 0,
+  "gate": "absent",
+  "wipe": "absent",
+  "stepTf": "none|none|none|none",
+  "runningAnims": ""
+ }
+}

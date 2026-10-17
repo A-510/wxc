@@ -1,0 +1,83 @@
+/* ============================================================================
+   出场动效 · 共享 HUD 原语（自绘；零外部素材 / 零字体 / 零 CDN）
+   风格来源：design-pipeline/references/visual-style-signals.json 的
+   `industrial-tactical`（高对比操作层级、结构线、裁切几何、状态遥测）。
+   颜色一律复用页面既有变量（--ink/--cyan/--magenta/--paper/--sheet），不新增色板。
+   命名纪律：罩内类名一律以 `.gate`（或 `.wipe`）为前缀做限定——页面自己也有 `.bar`，
+   不限定就会撞类名（实测过：页面表格进度条被套上入场动画）。
+   ========================================================================== */
+
+/* ---------------------------------------------------------------- 出场罩 */
+.gate{position:fixed;inset:0;z-index:99;background:var(--ink);color:var(--paper);
+      display:grid;place-items:center;overflow:hidden;font-variant-numeric:tabular-nums}
+
+/* 1.5px 发丝框 + 四个 L 形角括（裁切几何，非装饰花边） */
+.gate .frame{position:absolute;inset:14px;border:1.5px solid rgba(255,253,246,.30);pointer-events:none}
+.gate .corner{position:absolute;width:20px;height:20px;border:2px solid var(--cyan)}
+.gate .corner.tl{left:-1px;top:-1px;border-right:0;border-bottom:0}
+.gate .corner.tr{right:-1px;top:-1px;border-left:0;border-bottom:0}
+.gate .corner.bl{left:-1px;bottom:-1px;border-right:0;border-top:0}
+.gate .corner.br{right:-1px;bottom:-1px;border-left:0;border-top:0}
+
+.gate .idline{position:absolute;left:20px;top:16px;font-size:11px;color:rgba(255,253,246,.58)}
+.gate .idline b{color:var(--cyan);font-weight:600}
+.gate .skiphint{position:absolute;right:20px;bottom:16px;font-size:11px;color:rgba(255,253,246,.45)}
+
+/* ------------------------------------------------------------ 中央字标块 */
+.gate .stack{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
+             width:min(680px,52vw)}
+.gate .emblem{display:block;color:var(--cyan);transform-origin:50% 50%}
+.gate .word{font-size:17px;font-weight:600;line-height:1.3}
+.gate .sub{font-size:11px;color:rgba(255,253,246,.55)}
+
+/* 发丝进度线：宽度约视口一半（对齐实测 560→1365 / 1584 ≈ 51%）。
+   用 width/height 显式给尺寸，避开页面 `.bar` 的 1.5px 墨框 + box-sizing:border-box
+   （否则内容盒塌成 0，线整条消失——实测过）。 */
+.gate .bar{position:relative;width:100%;height:2px;min-width:0;border:0;border-radius:0;
+           background:rgba(255,253,246,.16);overflow:visible;margin-top:4px}
+.gate .bar i{position:absolute;left:0;top:0;width:100%;height:2px;background:var(--cyan);
+             transform-origin:left center;transform:scaleX(0)}
+
+/* 自检行：方块指示 + 中文状态（形状通道，无图标字体） */
+.gate .log{list-style:none;margin:4px 0 0;padding:0;width:100%;display:grid;gap:4px}
+.gate .log li{display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,253,246,.74);
+              white-space:nowrap}
+.gate .log .sq{flex:none;width:7px;height:7px;border:1.5px solid rgba(255,253,246,.45);
+               background:transparent}
+
+/* ------------------------------------------------------------ 内容带擦除 */
+/* 几何通道：clip-path 由右向左揭开 + 5px 上落；opacity 不参与承载 */
+@keyframes bandWipe{
+  from{clip-path:inset(0 100% 0 0);transform:translateY(-5px)}
+  to{clip-path:inset(0 0 0 0);transform:none}
+}
+
+/* ------------------------------------------------------------------ 降级 */
+/* 任意输入（键/指针/触摸/滚轮）或入场结束：直接终态，信息量不减 */
+html.wxc-skip .gate{display:none !important}
+html.wxc-skip .wipe{display:none !important}
+html.wxc-skip .frame,
+html.wxc-skip .corner,
+html.wxc-skip .emblem,
+html.wxc-skip .idline,
+html.wxc-skip .gate .bar i,
+html.wxc-skip .log li,
+html.wxc-skip .log .sq,
+html.wxc-skip .topbar,
+html.wxc-skip .poster,
+html.wxc-skip .steps,
+html.wxc-skip .step,
+html.wxc-skip .step::after,
+html.wxc-skip .tools,
+html.wxc-skip .panel,
+html.wxc-skip tbody tr,
+html.wxc-skip .step .n{
+  animation:none !important;transform:none !important;clip-path:none !important}
+
+@media (prefers-reduced-motion:reduce){
+  .gate,.wipe{display:none !important}
+  .frame,.corner,.emblem,.idline,.gate .bar i,.log li,.log .sq,
+  .topbar,.poster,.steps,.step,.step::after,.tools,.panel,tbody tr,.step .n,
+  .wipe-edge,.wipe-tag,.wipe-id{
+    animation:none !important;transform:none !important;clip-path:none !important}
+}

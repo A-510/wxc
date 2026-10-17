@@ -1,0 +1,12 @@
+{
+ "errs": [],
+ "early": {
+  "cls": "wxc-boot",
+  "gate": "grid",
+  "seen": "1"
+ },
+ "late": {
+  "cls": "(none)",
+  "gate": "none"
+ }
+}

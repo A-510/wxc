@@ -1,0 +1,550 @@
+{
+ "url": "http://127.0.0.1:8900/",
+ "viewport": [
+  1440,
+  900
+ ],
+ "firstLoad": {
+  "errors": [],
+  "samples": [
+   {
+    "t": 10,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 253,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 295,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 336,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 378,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 419,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 461,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 503,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 559,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 600,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 642,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 684,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 725,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 767,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 86.9219% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 809,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 32.7277% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 850,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 12.2964% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 893,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 4.52223% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -3.87956)"
+   },
+   {
+    "t": 934,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 1.47896% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -1.45687)"
+   },
+   {
+    "t": 975,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0.35576% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -0.546852)"
+   },
+   {
+    "t": 1018,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0.0391198% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -0.199895)"
+   },
+   {
+    "t": 1059,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 2.15022e-06% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -0.0634752)"
+   },
+   {
+    "t": 1100,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -0.0144706)"
+   },
+   {
+    "t": 1142,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -0.00131579)"
+   },
+   {
+    "t": 1184,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, 0)"
+   },
+   {
+    "t": 1226,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, 0)"
+   },
+   {
+    "t": 1267,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, 0)"
+   },
+   {
+    "t": 1309,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, 0)"
+   },
+   {
+    "t": 1351,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 0% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, 0)"
+   },
+   {
+    "t": 1393,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1454,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1496,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1538,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1580,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1621,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1663,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1704,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1753,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1794,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1838,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1878,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1921,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 1968,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 2010,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 2051,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 2093,
+    "cls": "(none)",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   }
+  ],
+  "n": 267
+ },
+ "secondLoad": {
+  "errors": [],
+  "cls": "(none)",
+  "gate": "none",
+  "seen": "1"
+ },
+ "skip": {
+  "postCls": "wxc-skip",
+  "gate": "none",
+  "posterClip": "none",
+  "panelClip": "none",
+  "log": [
+   {
+    "t": 302,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 309,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 316,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 323,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 330,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 337,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 344,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 351,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 358,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 365,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 371,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 378,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 385,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 392,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 399,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 406,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 413,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 420,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 427,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 434,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 441,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 448,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 455,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 462,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 469,
+    "cls": "wxc-boot",
+    "gate": "grid/visible",
+    "posterClip": "inset(0px 100% 0px 0px)",
+    "stepsTf": "matrix(1, 0, 0, 1, 0, -5)"
+   },
+   {
+    "t": 476,
+    "cls": "wxc-skip",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 482,
+    "cls": "wxc-skip",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 489,
+    "cls": "wxc-skip",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   },
+   {
+    "t": 496,
+    "cls": "wxc-skip",
+    "gate": "none/visible",
+    "posterClip": "none",
+    "stepsTf": "none"
+   }
+  ]
+ },
+ "reducedMotion": {
+  "cls": "(none)",
+  "gate": "none",
+  "seen": null
+ }
+}

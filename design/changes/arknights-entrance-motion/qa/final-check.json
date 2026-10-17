@@ -1,0 +1,27 @@
+{
+ "errs": [],
+ "after": {
+  "cls": "(none)",
+  "rows": 6,
+  "barWidths": [
+   "",
+   "42%"
+  ],
+  "barTransforms": [
+   "none",
+   "none"
+  ],
+  "spins": 1,
+  "stepsDone": 4,
+  "stepCur": 0,
+  "errTexts": 1,
+  "pills": [
+   "抓包：运行中",
+   "系统代理：127.0.0.1:8899",
+   "CA 证书：已信任",
+   "ffmpeg：就绪"
+  ],
+  "stats": "共 6 条 · 完成 2 · 失败 1 · 下载中 2",
+  "runningAnims": "orbit"
+ }
+}
